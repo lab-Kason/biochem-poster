@@ -639,9 +639,6 @@ def show_mechanisms():
         show_intercepts = st.checkbox("Show LB intercept labels", value=True, key="show_intercepts",
                                      help="Label Y-intercept (1/Vmax) and X-intercept (-1/Km) on LB plot")
         
-        # Create two columns for MM and LB plots side by side
-        plot_col1, plot_col2 = st.columns(2)
-        
         # Determine color based on mechanism
         mechanism_colors = {
             "Competitive Inhibition": "red",
@@ -651,8 +648,9 @@ def show_mechanisms():
         }
         inhibitor_color = mechanism_colors.get(mechanism, "red")
         
-        with plot_col1:
-            st.markdown("**Michaelis-Menten Plot**")
+        # MM Plot (first, on top)
+        st.markdown("---")
+        st.markdown("**Michaelis-Menten Plot**")
             
             # Generate kinetic curves
             substrate = np.linspace(0.1, 20, 100)
@@ -725,8 +723,9 @@ def show_mechanisms():
                         mm_info += f"🔴 Apparent Vmax/2 = {apparent_vmax/2:.2f} µmol/min ({inhibitor_color} dotted)"
                 st.caption(mm_info)
         
-        with plot_col2:
-            st.markdown("**Lineweaver-Burk Plot**")
+        # LB Plot (second, below MM plot)
+        st.markdown("---")
+        st.markdown("**Lineweaver-Burk Plot**")
             
             # Generate substrate concentrations for LB plot
             substrate_conc_lb = np.array([0.5, 1, 2, 4, 8, 16])  # mM
@@ -742,11 +741,18 @@ def show_mechanisms():
             y_intercept_no_inh = 1 / vmax
             x_intercept_no_inh = -1 / km
             
-            # Calculate slope for line extension
-            slope_no_inh = (reciprocal_v_no_inh[-1] - reciprocal_v_no_inh[0]) / (reciprocal_s[-1] - reciprocal_s[0])
+            # Calculate slope: slope = (y_intercept - 0) / (0 - x_intercept) = y_intercept / (-x_intercept)
+            slope_no_inh = y_intercept_no_inh / (0 - x_intercept_no_inh)
             
-            # Extend line to show intercepts: from x-intercept to beyond the data range
-            x_extended_no_inh = np.array([x_intercept_no_inh, 0, reciprocal_s[-1]])
+            # Find where line crosses y=0 (x-axis): 0 = y_intercept + slope * x
+            # x_at_y0 = -y_intercept / slope
+            x_at_y0_no_inh = -y_intercept_no_inh / slope_no_inh if slope_no_inh != 0 else x_intercept_no_inh
+            
+            # Extend line from x-intercept to where it crosses y=0
+            if x_at_y0_no_inh > x_intercept_no_inh:
+                x_extended_no_inh = np.linspace(x_intercept_no_inh, x_at_y0_no_inh, 100)
+            else:
+                x_extended_no_inh = np.linspace(x_at_y0_no_inh, x_intercept_no_inh, 100)
             y_extended_no_inh = y_intercept_no_inh + slope_no_inh * x_extended_no_inh
             
             fig_lb = go.Figure()
@@ -792,17 +798,21 @@ def show_mechanisms():
                     apparent_km_lb = km * alpha / alpha_prime
                     apparent_vmax_lb = vmax / alpha_prime
                 
-                reciprocal_v_inh = 1 / velocity_inh_lb
-                
                 # Calculate inhibitor intercepts
                 y_intercept_inh = 1 / apparent_vmax_lb
                 x_intercept_inh = -1 / apparent_km_lb
                 
-                # Calculate slope for line extension
-                slope_inh = (reciprocal_v_inh[-1] - reciprocal_v_inh[0]) / (reciprocal_s[-1] - reciprocal_s[0])
+                # Calculate slope
+                slope_inh = y_intercept_inh / (0 - x_intercept_inh)
                 
-                # Extend line to show intercepts
-                x_extended_inh = np.array([x_intercept_inh, 0, reciprocal_s[-1]])
+                # Find where line crosses y=0
+                x_at_y0_inh = -y_intercept_inh / slope_inh if slope_inh != 0 else x_intercept_inh
+                
+                # Extend line from x-intercept to where it crosses y=0
+                if x_at_y0_inh > x_intercept_inh:
+                    x_extended_inh = np.linspace(x_intercept_inh, x_at_y0_inh, 100)
+                else:
+                    x_extended_inh = np.linspace(x_at_y0_inh, x_intercept_inh, 100)
                 y_extended_inh = y_intercept_inh + slope_inh * x_extended_inh
                 
                 # Plot extended line with inhibitor
