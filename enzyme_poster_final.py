@@ -1539,7 +1539,7 @@ def main():
             if show_inhibitor_lb:
                 inh_type_lb = st.selectbox(
                     "Inhibition Type",
-                    ["Competitive", "Non-competitive", "Uncompetitive"],
+                    ["Competitive", "Non-competitive", "Uncompetitive", "Mixed"],
                     key="inh_type_lb"
                 )
                 
@@ -1593,8 +1593,11 @@ def main():
                         velocity_inh = vmax_lb * substrate_conc / (km_lb * alpha + substrate_conc)
                     elif inh_type_lb == "Non-competitive":
                         velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb + substrate_conc)
-                    else:  # Uncompetitive
+                    elif inh_type_lb == "Uncompetitive":
                         velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb / alpha + substrate_conc)
+                    else:  # Mixed inhibition
+                        alpha_prime = alpha  # For simplicity, assume alpha = alpha'
+                        velocity_inh = vmax_lb * substrate_conc / (alpha * km_lb + alpha_prime * substrate_conc)
                     
                     reciprocal_v_inh = 1 / velocity_inh
                     
