@@ -599,6 +599,12 @@ def show_mechanisms():
         col_reset, col_space = st.columns([1, 3])
         with col_reset:
             if st.button("🔄 Reset to Defaults", help="Reset all parameters to default values"):
+                # Clear all relevant session state keys
+                keys_to_clear = ['km_slider', 'vmax_slider', 'show_inh_mech', 'inhibitor_conc_slider', 
+                                'ki_slider', 'show_km_line', 'show_vmax_line', 'show_intercepts']
+                for key in keys_to_clear:
+                    if key in st.session_state:
+                        del st.session_state[key]
                 st.rerun()
         
         km = st.slider("Km (substrate affinity)", 0.1, 10.0, 1.0, 0.1, key="km_slider",
@@ -732,21 +738,37 @@ def show_mechanisms():
             reciprocal_s = 1 / substrate_conc_lb
             reciprocal_v_no_inh = 1 / velocity_no_inh_lb
             
-            fig_lb = go.Figure()
-            
-            # Plot without inhibitor
-            fig_lb.add_trace(go.Scatter(
-                x=reciprocal_s, 
-                y=reciprocal_v_no_inh,
-                mode='lines+markers',
-                name='No Inhibitor',
-                line=dict(color='blue', width=2),
-                marker=dict(size=6)
-            ))
-            
             # Calculate and store intercepts for annotation
             y_intercept_no_inh = 1 / vmax
             x_intercept_no_inh = -1 / km
+            
+            # Calculate slope for line extension
+            slope_no_inh = (reciprocal_v_no_inh[-1] - reciprocal_v_no_inh[0]) / (reciprocal_s[-1] - reciprocal_s[0])
+            
+            # Extend line to show intercepts: from x-intercept to beyond the data range
+            x_extended_no_inh = np.array([x_intercept_no_inh, 0, reciprocal_s[-1]])
+            y_extended_no_inh = y_intercept_no_inh + slope_no_inh * x_extended_no_inh
+            
+            fig_lb = go.Figure()
+            
+            # Plot extended line without inhibitor
+            fig_lb.add_trace(go.Scatter(
+                x=x_extended_no_inh, 
+                y=y_extended_no_inh,
+                mode='lines',
+                name='No Inhibitor',
+                line=dict(color='blue', width=2)
+            ))
+            
+            # Add data points
+            fig_lb.add_trace(go.Scatter(
+                x=reciprocal_s, 
+                y=reciprocal_v_no_inh,
+                mode='markers',
+                name='Data Points',
+                marker=dict(size=8, color='blue'),
+                showlegend=False
+            ))
             
             # Add inhibitor conditions
             if show_inhibitor:
@@ -772,18 +794,34 @@ def show_mechanisms():
                 
                 reciprocal_v_inh = 1 / velocity_inh_lb
                 
-                fig_lb.add_trace(go.Scatter(
-                    x=reciprocal_s, 
-                    y=reciprocal_v_inh,
-                    mode='lines+markers',
-                    name='With Inhibitor',
-                    line=dict(color=inhibitor_color, width=2, dash='dash'),
-                    marker=dict(size=6)
-                ))
-                
                 # Calculate inhibitor intercepts
                 y_intercept_inh = 1 / apparent_vmax_lb
                 x_intercept_inh = -1 / apparent_km_lb
+                
+                # Calculate slope for line extension
+                slope_inh = (reciprocal_v_inh[-1] - reciprocal_v_inh[0]) / (reciprocal_s[-1] - reciprocal_s[0])
+                
+                # Extend line to show intercepts
+                x_extended_inh = np.array([x_intercept_inh, 0, reciprocal_s[-1]])
+                y_extended_inh = y_intercept_inh + slope_inh * x_extended_inh
+                
+                # Plot extended line with inhibitor
+                fig_lb.add_trace(go.Scatter(
+                    x=x_extended_inh, 
+                    y=y_extended_inh,
+                    mode='lines',
+                    name='With Inhibitor',
+                    line=dict(color=inhibitor_color, width=2, dash='dash')
+                ))
+                
+                # Add data points
+                fig_lb.add_trace(go.Scatter(
+                    x=reciprocal_s, 
+                    y=reciprocal_v_inh,
+                    mode='markers',
+                    marker=dict(size=8, color=inhibitor_color),
+                    showlegend=False
+                ))
                 
                 # Mark intercepts with simple dots (no text to avoid overlap)
                 if show_intercepts:
