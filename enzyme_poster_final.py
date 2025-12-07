@@ -104,11 +104,10 @@ def create_header():
             - Clinical trial data with interactive charts
             - *Best for: Real-world applications*
             
-            **4. 📊 Kinetics**
-            - Lineweaver-Burk plots
-            - Eadie-Hofstee transformation
-            - Michaelis-Menten simulator
-            - *Best for: Advanced kinetics analysis*
+            **4. 📊 Lineweaver-Burk Plot**
+            - Linear transformation for Km and Vmax determination
+            - Compare different inhibition types
+            - *Best for: Identifying inhibition mechanisms from data*
             
             **5. 🧮 Calculator**
             - IC50 calculator (with CSV export)
@@ -138,7 +137,7 @@ def create_header():
         # Navigation
         selected = option_menu(
             menu_title=None,
-            options=["Overview", "Mechanisms", "Case Studies", "Kinetics", "Calculator", "References"],
+            options=["Overview", "Mechanisms", "Case Studies", "Lineweaver-Burk", "Calculator", "References"],
             icons=["house", "gear", "book", "graph-up", "calculator", "journal-text"],
             menu_icon="cast",
             default_index=0,
@@ -1457,21 +1456,17 @@ def main():
         show_mechanisms()
     elif selected_section == "Case Studies":
         show_case_studies()
-    elif selected_section == "Kinetics":
-        st.markdown('<div class="section-header">📊 Interactive Kinetics Explorer</div>', unsafe_allow_html=True)
+    elif selected_section == "Lineweaver-Burk":
+        st.markdown('<div class="section-header">📊 Lineweaver-Burk Analysis</div>', unsafe_allow_html=True)
         
-        # User Guide for Kinetics
-        with st.expander("📖 How to Use the Kinetics Explorer", expanded=False):
+        # User Guide for Lineweaver-Burk
+        with st.expander("📖 How to Use the Lineweaver-Burk Plot", expanded=False):
             st.markdown("""
-            **Advanced Enzyme Kinetics Analysis Tools**
+            **Lineweaver-Burk (Double Reciprocal) Plot** 📐
             
-            **Three Different Analysis Methods - Choose a Tab:**
+            **Purpose:** Linear transformation of Michaelis-Menten equation to determine Km and Vmax graphically
             
             ---
-            
-            ### **Tab 1: Lineweaver-Burk Plot** 📐
-            
-            **Purpose:** Linear transformation of Michaelis-Menten equation to determine Km and Vmax
             
             **How to use:**
             1. Adjust **Vmax slider** (10-200 μmol/min) - maximum velocity
@@ -1481,74 +1476,53 @@ def main():
             5. Set **Ki value** (inhibitor dissociation constant)
             6. Set **[I]** (inhibitor concentration)
             
+            ---
+            
             **Interpreting the plot:**
-            - **Y-intercept = 1/Vmax**
-            - **X-intercept = -1/Km**
-            - **Slope = Km/Vmax**
+            
+            The Lineweaver-Burk plot transforms the hyperbolic Michaelis-Menten equation into a straight line:
+            
+            - **Y-intercept = 1/Vmax** (where the line crosses the Y-axis)
+            - **X-intercept = -1/Km** (where the line crosses the X-axis)
+            - **Slope = Km/Vmax** (steepness of the line)
+            
+            ---
             
             **Distinguishing inhibition types:**
-            - **Competitive:** Lines intersect on Y-axis (same Vmax, different Km)
-            - **Non-competitive:** Lines intersect on X-axis (different Vmax, same Km)
-            - **Uncompetitive:** Parallel lines (both Vmax and Km change proportionally)
+            
+            This is the **key advantage** of Lineweaver-Burk plots - you can visually identify inhibition mechanisms:
+            
+            - **Competitive inhibition:** 
+              - Lines intersect on **Y-axis** (same 1/Vmax)
+              - Different X-intercepts (different apparent Km)
+              - Interpretation: Inhibitor increases Km but doesn't change Vmax
+            
+            - **Non-competitive inhibition:** 
+              - Lines intersect on **X-axis** (same -1/Km)
+              - Different Y-intercepts (different 1/Vmax)
+              - Interpretation: Inhibitor decreases Vmax but doesn't change Km
+            
+            - **Uncompetitive inhibition:** 
+              - Lines are **parallel** (same slope)
+              - Both intercepts change
+              - Interpretation: Both Vmax and Km decrease proportionally
             
             ---
             
-            ### **Tab 2: Eadie-Hofstee Plot** 📊
+            **Experimental application:**
+            - Plot 1/v vs 1/[S] data from enzyme assays
+            - Add data with and without inhibitor
+            - Identify inhibition type from line intersection pattern
+            - Calculate Km and Vmax from intercepts
             
-            **Purpose:** Alternative linear transformation with more uniform error distribution
-            
-            **How to use:**
-            1. Adjust **Vmax** and **Km** parameters
-            2. View linear relationship: v vs v/[S]
-            
-            **Advantages:**
-            - Better statistical properties than Lineweaver-Burk
-            - More uniform error distribution across the plot
-            - Y-intercept directly gives Vmax
-            - Slope = -Km
-            
-            **When to use:** Preferred for accurate parameter determination from experimental data
-            
-            ---
-            
-            ### **Tab 3: Kinetic Simulator** 🧪
-            
-            **Purpose:** Comprehensive Michaelis-Menten simulation with calculated parameters
-            
-            **How to use:**
-            1. Set **Vmax** (μmol/min) - maximum reaction velocity
-            2. Set **Km** (mM) - Michaelis constant
-            3. Set **[E]** enzyme concentration (μM)
-            4. Adjust **substrate range** (1-100 mM)
-            5. View calculated **kcat** and **kcat/Km** values
-            
-            **What you'll see:**
-            - **Upper plot:** Michaelis-Menten curve with Vmax and Km indicators
-            - **Lower plot:** Enzyme saturation percentage vs [S]
-            
-            **Calculated constants:**
-            - **kcat (turnover number):** Number of substrate molecules converted per enzyme per minute
-            - **kcat/Km (specificity constant):** Measure of catalytic efficiency
-            - Comparison to diffusion limit (~10⁸-10⁹ M⁻¹s⁻¹)
-            
-            **Applications:**
-            - Understanding enzyme saturation
-            - Comparing enzyme efficiency
-            - Visualizing substrate concentration effects
-            
-            ---
-            
-            **All plots update in real-time as you adjust parameters!**
+            **Try adjusting the parameters to see how each inhibition type produces different line patterns!**
             """)
         
-        st.write("""Explore enzyme kinetics through interactive plots and simulations. 
-        Visualize Michaelis-Menten and Lineweaver-Burk plots under different inhibition conditions.""")
+        st.write("""Linear transformation of Michaelis-Menten kinetics to identify inhibition mechanisms 
+        and determine kinetic parameters graphically.""")  
         
-        # Create tabs for different kinetic analyses
-        tab1, tab2, tab3 = st.tabs(["Lineweaver-Burk Plot", "Eadie-Hofstee Plot", "Kinetic Simulator"])
-        
-        with tab1:
-            st.subheader("Lineweaver-Burk (Double Reciprocal) Plot")
+        # Main content (no tabs needed)
+        st.subheader("Lineweaver-Burk (Double Reciprocal) Plot")
             
             col1, col2 = st.columns([1, 2])
             
@@ -1657,156 +1631,7 @@ def main():
                     with col_b:
                         st.metric("Vmax/Km (Efficiency)", f"{vmax_lb/km_lb:.2f}")
                         if show_inhibitor_lb:
-                            st.metric("Ki", f"{ki_lb} mM")
-        
-        with tab2:
-            st.subheader("Eadie-Hofstee Plot")
-            
-            col1, col2 = st.columns([1, 2])
-            
-            with col1:
-                st.markdown("#### Parameters")
-                
-                vmax_eh = st.slider("Vmax (µmol/min)", 10, 200, 100, 5, key="vmax_eh",
-                                   help="Maximum reaction velocity")
-                km_eh = st.slider("Km (mM)", 0.5, 20.0, 5.0, 0.5, key="km_eh",
-                                 help="Substrate concentration at half Vmax")
-                
-                st.markdown("**Equation:**")
-                st.latex(r"v = -K_m \cdot \frac{v}{[S]} + V_{max}")
-                
-                st.info("""**Interpretation:**
-- **Y-intercept:** Vmax
-- **Slope:** -Km
-- More uniform error distribution than Lineweaver-Burk
-                """)
-            
-            with col2:
-                # Generate data
-                substrate_conc_eh = np.linspace(0.5, 30, 50)
-                velocity_eh = vmax_eh * substrate_conc_eh / (km_eh + substrate_conc_eh)
-                v_over_s = velocity_eh / substrate_conc_eh
-                
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(
-                    x=v_over_s,
-                    y=velocity_eh,
-                    mode='lines+markers',
-                    name='Eadie-Hofstee',
-                    line=dict(color='purple', width=2),
-                    marker=dict(size=6)
-                ))
-                
-                fig.update_layout(
-                    title='Eadie-Hofstee Plot',
-                    xaxis_title='v/[S] (µmol/min/mM)',
-                    yaxis_title='v (µmol/min)',
-                    height=500
-                )
-                
-                st.plotly_chart(fig, width='stretch')
-                st.caption("*Theoretical plot based on enzyme kinetics equations (Cornish-Bowden, 2012).*")
-                
-                st.markdown(f"""**Results:**
-- **Vmax:** {vmax_eh} µmol/min (y-intercept)
-- **Km:** {km_eh} mM (negative of slope)
-- **Catalytic efficiency (kcat/Km):** {vmax_eh/km_eh:.2f}
-                """)
-        
-        with tab3:
-            st.subheader("Enzyme Kinetics Simulator")
-            
-            st.write("""Simulate enzyme reactions and observe how different parameters affect reaction velocity.""")
-            
-            col1, col2 = st.columns([1, 1])
-            
-            with col1:
-                st.markdown("#### Enzyme Properties")
-                
-                sim_vmax = st.number_input("Vmax (µmol/min)", min_value=1.0, value=100.0, step=5.0,
-                                          help="Maximum velocity when enzyme is saturated")
-                sim_km = st.number_input("Km (mM)", min_value=0.1, value=5.0, step=0.5,
-                                        help="Substrate concentration giving half-maximal velocity")
-                enzyme_conc = st.number_input("[E] Enzyme Concentration (µM)", 
-                                             min_value=0.1, value=1.0, step=0.1,
-                                             help="Total enzyme concentration in the reaction")
-                
-                st.markdown("#### Reaction Conditions")
-                substrate_range = st.slider("Substrate Concentration Range (mM)", 
-                                           1.0, 100.0, 50.0, 1.0,
-                                           help="Maximum substrate concentration to plot")
-                temperature = st.slider("Temperature (°C)", 20, 40, 37, 1,
-                                      help="For reference only - not used in calculation")
-                
-                # Calculate kcat
-                if enzyme_conc > 0:
-                    kcat = sim_vmax / enzyme_conc
-                    kcat_km = kcat / sim_km
-                    st.markdown(f"""**Calculated Constants:**
-- **kcat (turnover number):** {kcat:.1f} min⁻¹
-- **kcat/Km (specificity constant):** {kcat_km:.2f} min⁻¹mM⁻¹
-- **Diffusion limit:** ~10⁸ to 10⁹ M⁻¹s⁻¹
-                    """)
-                else:
-                    st.warning("⚠️ Enzyme concentration must be > 0 to calculate kcat")
-            
-            with col2:
-                # Generate simulation data
-                substrate_sim = np.linspace(0.1, substrate_range, 200)
-                velocity_sim = sim_vmax * substrate_sim / (sim_km + substrate_sim)
-                
-                # Create figure with multiple views
-                fig = go.Figure()
-                
-                # Michaelis-Menten curve
-                fig.add_trace(go.Scatter(
-                    x=substrate_sim,
-                    y=velocity_sim,
-                    mode='lines',
-                    name='Reaction Velocity',
-                    line=dict(color='green', width=3)
-                ))
-                
-                # Add Vmax line
-                fig.add_hline(y=sim_vmax, line_dash="dash", line_color="red",
-                            annotation_text=f"Vmax = {sim_vmax}")
-                
-                # Add Km indicator
-                v_at_km = sim_vmax / 2
-                fig.add_hline(y=v_at_km, line_dash="dot", line_color="orange",
-                            annotation_text=f"Vmax/2 at Km = {sim_km}")
-                fig.add_vline(x=sim_km, line_dash="dot", line_color="orange")
-                
-                fig.update_layout(
-                    title='Michaelis-Menten Kinetics Simulation',
-                    xaxis_title='[S] Substrate Concentration (mM)',
-                    yaxis_title='v Reaction Velocity (µmol/min)',
-                    height=400
-                )
-                
-                st.plotly_chart(fig, width='stretch')
-                st.caption("*Simulated using Michaelis-Menten equation: v = Vmax[S]/(Km + [S]).*")
-                
-                # Saturation analysis
-                saturation = (substrate_sim / (sim_km + substrate_sim)) * 100
-                
-                fig2 = go.Figure()
-                fig2.add_trace(go.Scatter(
-                    x=substrate_sim,
-                    y=saturation,
-                    mode='lines',
-                    fill='tonexty',
-                    line=dict(color='blue', width=2)
-                ))
-                
-                fig2.update_layout(
-                    title='Enzyme Saturation',
-                    xaxis_title='[S] Substrate Concentration (mM)',
-                    yaxis_title='Enzyme Saturation (%)',
-                    height=300
-                )
-                
-                st.plotly_chart(fig2, width='stretch')
+                            st.metric("Ki", f"{ki_lb} mM}")
     elif selected_section == "Calculator":
         show_calculator()
     elif selected_section == "References":
