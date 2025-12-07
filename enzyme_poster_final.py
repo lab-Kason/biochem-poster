@@ -651,16 +651,16 @@ def show_mechanisms():
         # MM Plot (first, on top)
         st.markdown("---")
         st.markdown("**Michaelis-Menten Plot**")
-            
-            # Generate kinetic curves
-            substrate = np.linspace(0.1, 20, 100)
-            velocity_no_inhibitor = vmax * substrate / (km + substrate)
-            
-            fig_mm = go.Figure()
-            fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_no_inhibitor, 
-                                   name='No Inhibitor', line=dict(color='blue', width=2)))
-            
-            if show_inhibitor:
+        
+        # Generate kinetic curves
+        substrate = np.linspace(0.1, 20, 100)
+        velocity_no_inhibitor = vmax * substrate / (km + substrate)
+        
+        fig_mm = go.Figure()
+        fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_no_inhibitor, 
+                               name='No Inhibitor', line=dict(color='blue', width=2)))
+        
+        if show_inhibitor:
                 alpha = inhibitor_strength  # Use calculated value
                 
                 if mechanism == "Competitive Inhibition":
@@ -682,251 +682,253 @@ def show_mechanisms():
                     apparent_vmax = vmax / alpha_prime
                 
                 fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_inhibitor, 
-                                       name='With Inhibitor', line=dict(color=inhibitor_color, dash='dash', width=2)))
-            
-            # Add annotation lines if toggled (NO TEXT to avoid overlap)
+                                   name='With Inhibitor', line=dict(color=inhibitor_color, dash='dash', width=2)))
+        
+        # Add annotation lines if toggled (NO TEXT to avoid overlap)
+        if show_km_line:
+            fig_mm.add_vline(x=km, line_dash="dot", line_color="gray", line_width=2)
+            if show_inhibitor and mechanism == "Competitive Inhibition":
+                fig_mm.add_vline(x=apparent_km, line_dash="dot", line_color=inhibitor_color, line_width=2)
+        
+        if show_vmax_line:
+            fig_mm.add_hline(y=vmax/2, line_dash="dot", line_color="gray", line_width=2)
+            if show_inhibitor:
+                fig_mm.add_hline(y=apparent_vmax/2, line_dash="dot", line_color=inhibitor_color, line_width=2)
+        
+        fig_mm.update_layout(
+            xaxis_title="[S] (mM)",
+            yaxis_title="v (µmol/min)",
+            height=400,
+            showlegend=True,
+            legend=dict(x=0.6, y=0.1),
+            margin=dict(l=10, r=10, t=30, b=10)
+        )
+        
+        # Add gridlines to MM plot
+        fig_mm.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
+        fig_mm.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
+        
+        st.plotly_chart(fig_mm, use_container_width=True)
+        
+        # Info box for MM plot showing key values (if annotations toggled)
+        if show_km_line or show_vmax_line:
+            mm_info = "**Reference Lines:**\n\n"
             if show_km_line:
-                fig_mm.add_vline(x=km, line_dash="dot", line_color="gray", line_width=2)
+                mm_info += f"🔵 Km = {km:.2f} mM (gray dotted)\n\n"
                 if show_inhibitor and mechanism == "Competitive Inhibition":
-                    fig_mm.add_vline(x=apparent_km, line_dash="dot", line_color=inhibitor_color, line_width=2)
-            
+                    mm_info += f"🔴 Apparent Km = {apparent_km:.2f} mM ({inhibitor_color} dotted)\n\n"
             if show_vmax_line:
-                fig_mm.add_hline(y=vmax/2, line_dash="dot", line_color="gray", line_width=2)
+                mm_info += f"🔵 Vmax/2 = {vmax/2:.2f} µmol/min (gray dotted)\n\n"
                 if show_inhibitor:
-                    fig_mm.add_hline(y=apparent_vmax/2, line_dash="dot", line_color=inhibitor_color, line_width=2)
-            
-            fig_mm.update_layout(
-                xaxis_title="[S] (mM)",
-                yaxis_title="v (µmol/min)",
-                height=400,
-                showlegend=True,
-                legend=dict(x=0.6, y=0.1),
-                margin=dict(l=10, r=10, t=30, b=10)
-            )
-            
-            # Add gridlines to MM plot
-            fig_mm.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
-            fig_mm.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
-            
-            st.plotly_chart(fig_mm, use_container_width=True)
-            
-            # Info box for MM plot showing key values (if annotations toggled)
-            if show_km_line or show_vmax_line:
-                mm_info = "**Reference Lines:**\n\n"
-                if show_km_line:
-                    mm_info += f"🔵 Km = {km:.2f} mM (gray dotted)\n\n"
-                    if show_inhibitor and mechanism == "Competitive Inhibition":
-                        mm_info += f"🔴 Apparent Km = {apparent_km:.2f} mM ({inhibitor_color} dotted)\n\n"
-                if show_vmax_line:
-                    mm_info += f"🔵 Vmax/2 = {vmax/2:.2f} µmol/min (gray dotted)\n\n"
-                    if show_inhibitor:
-                        mm_info += f"🔴 Apparent Vmax/2 = {apparent_vmax/2:.2f} µmol/min ({inhibitor_color} dotted)"
-                st.caption(mm_info)
+                    mm_info += f"🔴 Apparent Vmax/2 = {apparent_vmax/2:.2f} µmol/min ({inhibitor_color} dotted)"
+            st.caption(mm_info)
         
         # LB Plot (second, below MM plot)
         st.markdown("---")
         st.markdown("**Lineweaver-Burk Plot**")
+        
+        # Generate substrate concentrations for LB plot
+        substrate_conc_lb = np.array([0.5, 1, 2, 4, 8, 16])  # mM
+        
+        # Calculate velocities (no inhibitor)
+        velocity_no_inh_lb = vmax * substrate_conc_lb / (km + substrate_conc_lb)
+        
+        # Lineweaver-Burk transformation
+        reciprocal_s = 1 / substrate_conc_lb
+        reciprocal_v_no_inh = 1 / velocity_no_inh_lb
+        
+        # Calculate and store intercepts for annotation
+        y_intercept_no_inh = 1 / vmax
+        x_intercept_no_inh = -1 / km
+        
+        # Calculate slope: slope = (y_intercept - 0) / (0 - x_intercept) = y_intercept / (-x_intercept)
+        slope_no_inh = y_intercept_no_inh / (0 - x_intercept_no_inh)
+        
+        # Find where line crosses y=0 (x-axis): 0 = y_intercept + slope * x
+        # x_at_y0 = -y_intercept / slope
+        x_at_y0_no_inh = -y_intercept_no_inh / slope_no_inh if slope_no_inh != 0 else x_intercept_no_inh
+        
+        # Extend line from x-intercept to where it crosses y=0
+        if x_at_y0_no_inh > x_intercept_no_inh:
+            x_extended_no_inh = np.linspace(x_intercept_no_inh, x_at_y0_no_inh, 100)
+        else:
+            x_extended_no_inh = np.linspace(x_at_y0_no_inh, x_intercept_no_inh, 100)
+        y_extended_no_inh = y_intercept_no_inh + slope_no_inh * x_extended_no_inh
+        
+        fig_lb = go.Figure()
+        
+        # Plot extended line without inhibitor
+        fig_lb.add_trace(go.Scatter(
+            x=x_extended_no_inh, 
+            y=y_extended_no_inh,
+            mode='lines',
+            name='No Inhibitor',
+            line=dict(color='blue', width=2)
+        ))
+        
+        # Add data points
+        fig_lb.add_trace(go.Scatter(
+            x=reciprocal_s, 
+            y=reciprocal_v_no_inh,
+            mode='markers',
+            name='Data Points',
+            marker=dict(size=8, color='blue'),
+            showlegend=False
+        ))
+        
+        # Add inhibitor conditions
+        if show_inhibitor:
+            alpha = inhibitor_strength
             
-            # Generate substrate concentrations for LB plot
-            substrate_conc_lb = np.array([0.5, 1, 2, 4, 8, 16])  # mM
+            if mechanism == "Competitive Inhibition":
+                velocity_inh_lb = vmax * substrate_conc_lb / (km * alpha + substrate_conc_lb)
+                apparent_km_lb = km * alpha
+                apparent_vmax_lb = vmax
+            elif mechanism == "Non-competitive Inhibition":
+                velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km + substrate_conc_lb)
+                apparent_km_lb = km
+                apparent_vmax_lb = vmax / alpha
+            elif mechanism == "Uncompetitive Inhibition":
+                velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km / alpha + substrate_conc_lb)
+                apparent_km_lb = km / alpha
+                apparent_vmax_lb = vmax / alpha
+            else:  # Mixed Inhibition
+                alpha_prime = alpha * 0.75
+                velocity_inh_lb = (vmax / alpha_prime) * substrate_conc_lb / ((km * alpha / alpha_prime) + substrate_conc_lb)
+                apparent_km_lb = km * alpha / alpha_prime
+                apparent_vmax_lb = vmax / alpha_prime
             
-            # Calculate velocities (no inhibitor)
-            velocity_no_inh_lb = vmax * substrate_conc_lb / (km + substrate_conc_lb)
+            reciprocal_v_inh = 1 / velocity_inh_lb
             
-            # Lineweaver-Burk transformation
-            reciprocal_s = 1 / substrate_conc_lb
-            reciprocal_v_no_inh = 1 / velocity_no_inh_lb
+            # Calculate inhibitor intercepts
+            y_intercept_inh = 1 / apparent_vmax_lb
+            x_intercept_inh = -1 / apparent_km_lb
             
-            # Calculate and store intercepts for annotation
-            y_intercept_no_inh = 1 / vmax
-            x_intercept_no_inh = -1 / km
+            # Calculate slope
+            slope_inh = y_intercept_inh / (0 - x_intercept_inh)
             
-            # Calculate slope: slope = (y_intercept - 0) / (0 - x_intercept) = y_intercept / (-x_intercept)
-            slope_no_inh = y_intercept_no_inh / (0 - x_intercept_no_inh)
-            
-            # Find where line crosses y=0 (x-axis): 0 = y_intercept + slope * x
-            # x_at_y0 = -y_intercept / slope
-            x_at_y0_no_inh = -y_intercept_no_inh / slope_no_inh if slope_no_inh != 0 else x_intercept_no_inh
+            # Find where line crosses y=0
+            x_at_y0_inh = -y_intercept_inh / slope_inh if slope_inh != 0 else x_intercept_inh
             
             # Extend line from x-intercept to where it crosses y=0
-            if x_at_y0_no_inh > x_intercept_no_inh:
-                x_extended_no_inh = np.linspace(x_intercept_no_inh, x_at_y0_no_inh, 100)
+            if x_at_y0_inh > x_intercept_inh:
+                x_extended_inh = np.linspace(x_intercept_inh, x_at_y0_inh, 100)
             else:
-                x_extended_no_inh = np.linspace(x_at_y0_no_inh, x_intercept_no_inh, 100)
-            y_extended_no_inh = y_intercept_no_inh + slope_no_inh * x_extended_no_inh
+                x_extended_inh = np.linspace(x_at_y0_inh, x_intercept_inh, 100)
+            y_extended_inh = y_intercept_inh + slope_inh * x_extended_inh
             
-            fig_lb = go.Figure()
-            
-            # Plot extended line without inhibitor
+            # Plot extended line with inhibitor
             fig_lb.add_trace(go.Scatter(
-                x=x_extended_no_inh, 
-                y=y_extended_no_inh,
+                x=x_extended_inh, 
+                y=y_extended_inh,
                 mode='lines',
-                name='No Inhibitor',
-                line=dict(color='blue', width=2)
+                name='With Inhibitor',
+                line=dict(color=inhibitor_color, width=2, dash='dash')
             ))
             
             # Add data points
             fig_lb.add_trace(go.Scatter(
                 x=reciprocal_s, 
-                y=reciprocal_v_no_inh,
+                y=reciprocal_v_inh,
                 mode='markers',
-                name='Data Points',
-                marker=dict(size=8, color='blue'),
+                marker=dict(size=8, color=inhibitor_color),
                 showlegend=False
             ))
             
-            # Add inhibitor conditions
-            if show_inhibitor:
-                alpha = inhibitor_strength
-                
-                if mechanism == "Competitive Inhibition":
-                    velocity_inh_lb = vmax * substrate_conc_lb / (km * alpha + substrate_conc_lb)
-                    apparent_km_lb = km * alpha
-                    apparent_vmax_lb = vmax
-                elif mechanism == "Non-competitive Inhibition":
-                    velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km + substrate_conc_lb)
-                    apparent_km_lb = km
-                    apparent_vmax_lb = vmax / alpha
-                elif mechanism == "Uncompetitive Inhibition":
-                    velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km / alpha + substrate_conc_lb)
-                    apparent_km_lb = km / alpha
-                    apparent_vmax_lb = vmax / alpha
-                else:  # Mixed Inhibition
-                    alpha_prime = alpha * 0.75
-                    velocity_inh_lb = (vmax / alpha_prime) * substrate_conc_lb / ((km * alpha / alpha_prime) + substrate_conc_lb)
-                    apparent_km_lb = km * alpha / alpha_prime
-                    apparent_vmax_lb = vmax / alpha_prime
-                
-                # Calculate inhibitor intercepts
-                y_intercept_inh = 1 / apparent_vmax_lb
-                x_intercept_inh = -1 / apparent_km_lb
-                
-                # Calculate slope
-                slope_inh = y_intercept_inh / (0 - x_intercept_inh)
-                
-                # Find where line crosses y=0
-                x_at_y0_inh = -y_intercept_inh / slope_inh if slope_inh != 0 else x_intercept_inh
-                
-                # Extend line from x-intercept to where it crosses y=0
-                if x_at_y0_inh > x_intercept_inh:
-                    x_extended_inh = np.linspace(x_intercept_inh, x_at_y0_inh, 100)
-                else:
-                    x_extended_inh = np.linspace(x_at_y0_inh, x_intercept_inh, 100)
-                y_extended_inh = y_intercept_inh + slope_inh * x_extended_inh
-                
-                # Plot extended line with inhibitor
-                fig_lb.add_trace(go.Scatter(
-                    x=x_extended_inh, 
-                    y=y_extended_inh,
-                    mode='lines',
-                    name='With Inhibitor',
-                    line=dict(color=inhibitor_color, width=2, dash='dash')
-                ))
-                
-                # Add data points
-                fig_lb.add_trace(go.Scatter(
-                    x=reciprocal_s, 
-                    y=reciprocal_v_inh,
-                    mode='markers',
-                    marker=dict(size=8, color=inhibitor_color),
-                    showlegend=False
-                ))
-                
-                # Mark intercepts with simple dots (no text to avoid overlap)
-                if show_intercepts:
-                    # Y-intercept marker for no inhibitor
-                    fig_lb.add_trace(go.Scatter(
-                        x=[0], y=[y_intercept_no_inh],
-                        mode='markers',
-                        marker=dict(size=10, color='blue', symbol='circle'),
-                        showlegend=False,
-                        hovertext=f"Y-intercept: 1/Vmax = {y_intercept_no_inh:.4f}"
-                    ))
-                    
-                    # X-intercept marker for no inhibitor
-                    fig_lb.add_trace(go.Scatter(
-                        x=[x_intercept_no_inh], y=[0],
-                        mode='markers',
-                        marker=dict(size=10, color='blue', symbol='square'),
-                        showlegend=False,
-                        hovertext=f"X-intercept: -1/Km = {x_intercept_no_inh:.4f}"
-                    ))
-                    
-                    # Y-intercept marker for inhibitor
-                    fig_lb.add_trace(go.Scatter(
-                        x=[0], y=[y_intercept_inh],
-                        mode='markers',
-                        marker=dict(size=10, color=inhibitor_color, symbol='circle'),
-                        showlegend=False,
-                        hovertext=f"Y-intercept: 1/Vmax' = {y_intercept_inh:.4f}"
-                    ))
-                    
-                    # X-intercept marker for inhibitor (if different)
-                    if abs(x_intercept_inh - x_intercept_no_inh) > 0.01:
-                        fig_lb.add_trace(go.Scatter(
-                            x=[x_intercept_inh], y=[0],
-                            mode='markers',
-                            marker=dict(size=10, color=inhibitor_color, symbol='square'),
-                            showlegend=False,
-                            hovertext=f"X-intercept: -1/Km' = {x_intercept_inh:.4f}"
-                        ))
-            else:
-                # Show intercepts even without inhibitor if toggled
-                if show_intercepts:
-                    fig_lb.add_trace(go.Scatter(
-                        x=[0], y=[y_intercept_no_inh],
-                        mode='markers',
-                        marker=dict(size=10, color='blue', symbol='circle'),
-                        showlegend=False,
-                        hovertext=f"Y-intercept: 1/Vmax = {y_intercept_no_inh:.4f}"
-                    ))
-                    fig_lb.add_trace(go.Scatter(
-                        x=[x_intercept_no_inh], y=[0],
-                        mode='markers',
-                        marker=dict(size=10, color='blue', symbol='square'),
-                        showlegend=False,
-                        hovertext=f"X-intercept: -1/Km = {x_intercept_no_inh:.4f}"
-                    ))
-            
-            fig_lb.update_layout(
-                xaxis_title='1/[S] (1/mM)',
-                yaxis_title='1/v (min/µmol)',
-                height=400,
-                showlegend=True,
-                legend=dict(x=0.05, y=0.95),
-                margin=dict(l=10, r=10, t=30, b=10)
-            )
-            
-            # Add grid for easier interpretation
-            fig_lb.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
-            fig_lb.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
-            
-            st.plotly_chart(fig_lb, use_container_width=True)
-            
-            # Info box for LB plot showing intercept values (if annotations toggled)
+            # Mark intercepts with simple dots (no text to avoid overlap)
             if show_intercepts:
-                lb_info = "**Intercept Values:**\n\n"
-                lb_info += f"🔵 **No Inhibitor:**\n"
-                lb_info += f"  • Y-intercept (⚫) = 1/Vmax = {y_intercept_no_inh:.4f}\n"
-                lb_info += f"  • X-intercept (◼) = -1/Km = {x_intercept_no_inh:.4f}\n\n"
-                if show_inhibitor:
-                    lb_info += f"🔴 **With Inhibitor:**\n"
-                    lb_info += f"  • Y-intercept (⚫) = 1/Vmax' = {y_intercept_inh:.4f}\n"
-                    if abs(x_intercept_inh - x_intercept_no_inh) > 0.01:
-                        lb_info += f"  • X-intercept (◼) = -1/Km' = {x_intercept_inh:.4f}\n"
-                    else:
-                        lb_info += f"  • X-intercept (◼) = Same as no inhibitor\n"
-                    lb_info += f"\n**Pattern:** "
-                    if mechanism == "Competitive Inhibition":
-                        lb_info += "Lines intersect on Y-axis ✓"
-                    elif mechanism == "Non-competitive Inhibition":
-                        lb_info += "Lines intersect on X-axis ✓"
-                    elif mechanism == "Uncompetitive Inhibition":
-                        lb_info += "Lines are parallel ✓"
-                    else:
-                        lb_info += "Lines intersect in 2nd quadrant ✓"
-                st.caption(lb_info)
+                # Y-intercept marker for no inhibitor
+                fig_lb.add_trace(go.Scatter(
+                    x=[0], y=[y_intercept_no_inh],
+                    mode='markers',
+                    marker=dict(size=10, color='blue', symbol='circle'),
+                    showlegend=False,
+                    hovertext=f"Y-intercept: 1/Vmax = {y_intercept_no_inh:.4f}"
+                ))
+                
+                # X-intercept marker for no inhibitor
+                fig_lb.add_trace(go.Scatter(
+                    x=[x_intercept_no_inh], y=[0],
+                    mode='markers',
+                    marker=dict(size=10, color='blue', symbol='square'),
+                    showlegend=False,
+                    hovertext=f"X-intercept: -1/Km = {x_intercept_no_inh:.4f}"
+                ))
+                
+                # Y-intercept marker for inhibitor
+                fig_lb.add_trace(go.Scatter(
+                    x=[0], y=[y_intercept_inh],
+                    mode='markers',
+                    marker=dict(size=10, color=inhibitor_color, symbol='circle'),
+                    showlegend=False,
+                    hovertext=f"Y-intercept: 1/Vmax' = {y_intercept_inh:.4f}"
+                ))
+                
+                # X-intercept marker for inhibitor (if different)
+                if abs(x_intercept_inh - x_intercept_no_inh) > 0.01:
+                    fig_lb.add_trace(go.Scatter(
+                        x=[x_intercept_inh], y=[0],
+                        mode='markers',
+                        marker=dict(size=10, color=inhibitor_color, symbol='square'),
+                        showlegend=False,
+                        hovertext=f"X-intercept: -1/Km' = {x_intercept_inh:.4f}"
+                    ))
+        else:
+            # Show intercepts even without inhibitor if toggled
+            if show_intercepts:
+                fig_lb.add_trace(go.Scatter(
+                    x=[0], y=[y_intercept_no_inh],
+                    mode='markers',
+                    marker=dict(size=10, color='blue', symbol='circle'),
+                    showlegend=False,
+                    hovertext=f"Y-intercept: 1/Vmax = {y_intercept_no_inh:.4f}"
+                ))
+                fig_lb.add_trace(go.Scatter(
+                    x=[x_intercept_no_inh], y=[0],
+                    mode='markers',
+                    marker=dict(size=10, color='blue', symbol='square'),
+                    showlegend=False,
+                    hovertext=f"X-intercept: -1/Km = {x_intercept_no_inh:.4f}"
+                ))
+        
+        fig_lb.update_layout(
+            xaxis_title='1/[S] (1/mM)',
+            yaxis_title='1/v (min/µmol)',
+            height=400,
+            showlegend=True,
+            legend=dict(x=0.05, y=0.95),
+            margin=dict(l=10, r=10, t=30, b=10)
+        )
+        
+        # Add grid for easier interpretation
+        fig_lb.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
+        fig_lb.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
+        
+        st.plotly_chart(fig_lb, use_container_width=True)
+        
+        # Info box for LB plot showing intercept values (if annotations toggled)
+        if show_intercepts:
+            lb_info = "**Intercept Values:**\n\n"
+            lb_info += f"🔵 **No Inhibitor:**\n"
+            lb_info += f"  • Y-intercept (⚫) = 1/Vmax = {y_intercept_no_inh:.4f}\n"
+            lb_info += f"  • X-intercept (◼) = -1/Km = {x_intercept_no_inh:.4f}\n\n"
+            if show_inhibitor:
+                lb_info += f"🔴 **With Inhibitor:**\n"
+                lb_info += f"  • Y-intercept (⚫) = 1/Vmax' = {y_intercept_inh:.4f}\n"
+                if abs(x_intercept_inh - x_intercept_no_inh) > 0.01:
+                    lb_info += f"  • X-intercept (◼) = -1/Km' = {x_intercept_inh:.4f}\n"
+                else:
+                    lb_info += f"  • X-intercept (◼) = Same as no inhibitor\n"
+                lb_info += f"\n**Pattern:** "
+                if mechanism == "Competitive Inhibition":
+                    lb_info += "Lines intersect on Y-axis ✓"
+                elif mechanism == "Non-competitive Inhibition":
+                    lb_info += "Lines intersect on X-axis ✓"
+                elif mechanism == "Uncompetitive Inhibition":
+                    lb_info += "Lines are parallel ✓"
+                else:
+                    lb_info += "Lines intersect in 2nd quadrant ✓"
+            st.caption(lb_info)
         
         # Add numeric readouts of calculated parameters
         if show_inhibitor:
