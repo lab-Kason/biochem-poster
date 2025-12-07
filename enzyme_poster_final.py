@@ -711,9 +711,9 @@ def show_mechanisms():
             margin=dict(l=10, r=10, t=30, b=10)
         )
         
-        # Add gridlines to MM plot
-        fig_mm.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
-        fig_mm.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
+        # Add gridlines to MM plot with solid black zero lines
+        fig_mm.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
+        fig_mm.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
         
         st.plotly_chart(fig_mm, use_container_width=True)
         
