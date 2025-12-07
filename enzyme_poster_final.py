@@ -764,24 +764,19 @@ def show_mechanisms():
         
         fig_lb = go.Figure()
         
-        # Plot extended line without inhibitor
-        fig_lb.add_trace(go.Scatter(
-            x=x_extended_no_inh, 
-            y=y_extended_no_inh,
-            mode='lines',
-            name='No Inhibitor',
-            line=dict(color='blue', width=2)
-        ))
+        # Extend data to include x-intercept for no inhibitor
+        x_no_inh_extended = np.concatenate([[x_intercept_no_inh], reciprocal_s])
+        y_no_inh_extended = np.concatenate([[0], reciprocal_v_no_inh])
         
-        # Add data points connected by lines
+        # Add line connecting from x-intercept through all data points
         fig_lb.add_trace(go.Scatter(
-            x=reciprocal_s, 
-            y=reciprocal_v_no_inh,
+            x=x_no_inh_extended, 
+            y=y_no_inh_extended,
             mode='lines+markers',
-            name='Data Points',
+            name='No Inhibitor',
             line=dict(color='blue', width=2),
             marker=dict(size=8, color='blue'),
-            showlegend=False
+            showlegend=True
         ))
         
         # Add inhibitor conditions
@@ -812,36 +807,19 @@ def show_mechanisms():
             y_intercept_inh = 1 / apparent_vmax_lb
             x_intercept_inh = -1 / apparent_km_lb
             
-            # Calculate slope
-            slope_inh = y_intercept_inh / (0 - x_intercept_inh)
+            # Extend data to include x-intercept for inhibitor
+            x_inh_extended = np.concatenate([[x_intercept_inh], reciprocal_s])
+            y_inh_extended = np.concatenate([[0], reciprocal_v_inh])
             
-            # Find where line crosses y=0
-            x_at_y0_inh = -y_intercept_inh / slope_inh if slope_inh != 0 else x_intercept_inh
-            
-            # Extend line from x-intercept to where it crosses y=0
-            if x_at_y0_inh > x_intercept_inh:
-                x_extended_inh = np.linspace(x_intercept_inh, x_at_y0_inh, 100)
-            else:
-                x_extended_inh = np.linspace(x_at_y0_inh, x_intercept_inh, 100)
-            y_extended_inh = y_intercept_inh + slope_inh * x_extended_inh
-            
-            # Plot extended line with inhibitor
+            # Add line connecting from x-intercept through all data points
             fig_lb.add_trace(go.Scatter(
-                x=x_extended_inh, 
-                y=y_extended_inh,
-                mode='lines',
-                name='With Inhibitor',
-                line=dict(color=inhibitor_color, width=2, dash='dash')
-            ))
-            
-            # Add data points connected by lines
-            fig_lb.add_trace(go.Scatter(
-                x=reciprocal_s, 
-                y=reciprocal_v_inh,
+                x=x_inh_extended, 
+                y=y_inh_extended,
                 mode='lines+markers',
+                name='With Inhibitor',
                 line=dict(color=inhibitor_color, width=2, dash='dash'),
                 marker=dict(size=8, color=inhibitor_color),
-                showlegend=False
+                showlegend=True
             ))
             
             # Mark intercepts with simple dots (no text to avoid overlap)
