@@ -1092,36 +1092,38 @@ def show_calculator():
         st.write("**IC50** (Half maximal inhibitory concentration): The concentration of inhibitor required to reduce enzyme activity by 50%.")
         
         # Description and importance
-        st.markdown("""---
-        ### 🎯 Why This Calculator is Essential
-        
-        IC50 is the **gold standard metric** in drug discovery for measuring inhibitor potency. Every pharmaceutical 
-        company uses IC50 values to:
-        - **Rank drug candidates** - Compare which compounds are most potent
-        - **Set dosing guidelines** - Determine therapeutic dose ranges
-        - **Predict efficacy** - Lower IC50 often correlates with better clinical outcomes
-        - **Optimize lead compounds** - Track improvement during medicinal chemistry
-        
-        **Real-world impact:** The difference between a drug that makes it to market vs. one that fails often comes 
-        down to IC50 values. For example, HIV protease inhibitors with IC50 < 10 nM became blockbuster drugs, while 
-        those with IC50 > 100 nM were abandoned.
-        
-        ### 📊 How to Use This Calculator
-        
-        **You'll need:** Experimental data from enzyme activity assays
-        
-        **Step-by-step:**
-        1. **Choose number of data points** (5-7 recommended for accuracy)
-        2. **Enter inhibitor concentrations** - Use a range spanning 2-3 orders of magnitude (e.g., 0.1, 1, 10, 100 µM)
-        3. **Enter corresponding enzyme activities** - Measured as % of control (no inhibitor = 100%)
-        4. **View results** - IC50 calculated automatically with dose-response curve
-        5. **Export data** - Download CSV for your lab notebook or report
-        
-        **Pro tip:** For best results, include concentrations both above and below your expected IC50. 
-        The curve must cross 50% activity for calculation to work.
-        
-        ---
+        st.info("""
+        💡 **What is IC50?**  
+        IC50 measures how much inhibitor you need to cut enzyme activity in half. Think of it as the "potency score" 
+        for your drug candidate - lower IC50 means stronger inhibition!
         """)
+        
+        with st.expander("🎯 Why IC50 Matters in Drug Discovery", expanded=False):
+            st.write("""
+            IC50 is the go-to metric that pharmaceutical companies use to:
+            
+            - **Compare candidates** - Which compound works best?
+            - **Set doses** - How much drug do patients need?
+            - **Predict success** - Lower IC50 often means better drugs
+            - **Track progress** - Are our modifications improving potency?
+            
+            **Real success story:** HIV protease inhibitors with IC50 < 10 nM became life-saving blockbuster drugs, 
+            while those with IC50 > 100 nM didn't make it past early trials. That 10-fold difference changed millions of lives!
+            """)
+        
+        with st.expander("📊 How to Use This Tool", expanded=False):
+            st.write("""
+            **What you'll need:** Data from your enzyme activity assay
+            
+            **Quick steps:**
+            1. Choose how many data points you have (5-7 is ideal)
+            2. Enter your inhibitor concentrations (try a wide range like 0.1, 1, 10, 100 µM)
+            3. Enter the % enzyme activity at each concentration (100% = no inhibitor)
+            4. Watch the calculator plot your dose-response curve and find IC50!
+            5. Download your results as CSV for your records
+            
+            💡 **Pro tip:** Make sure your data crosses 50% activity - test both high and low concentrations!
+            """)
         
         col1, col2 = st.columns([1, 1])
         
@@ -1253,46 +1255,50 @@ def show_calculator():
         st.write("**Ki**: Dissociation constant of the enzyme-inhibitor complex. Lower Ki = Stronger binding.")
         
         # Description and importance
-        st.markdown("""---
-        ### 🎯 Why This Calculator is Essential
-        
-        Ki is the **true thermodynamic binding constant** - it tells you the actual affinity between enzyme and inhibitor, 
-        independent of assay conditions. This is critical because:
-        
-        - **IC50 depends on assay conditions** - Same inhibitor can have different IC50 values depending on 
-          substrate concentration, enzyme concentration, and incubation time
-        - **Ki is mechanism-independent** - A competitive inhibitor's Ki remains constant regardless of [S]
-        - **Enables fair comparison** - Compare inhibitors tested in different labs under different conditions
-        - **Structure-activity relationships** - Ki correlates directly with binding energy (ΔG = RT ln Ki)
-        - **Predicts in vivo behavior** - Ki better predicts drug efficacy than IC50
-        
-        **Example:** An inhibitor with IC50 = 10 µM tested at high [S] might have Ki = 1 µM (10x more potent than 
-        IC50 suggests!). This happens with competitive inhibitors due to substrate competition.
-        
-        ### 🧮 How to Use This Calculator (Cheng-Prusoff Equations)
-        
-        **You'll need:**
-        - IC50 value (from calculator Tab 1 or your experiments)
-        - Substrate concentration [S] used in your IC50 assay
-        - Km value for your enzyme (from literature or Michaelis-Menten experiments)
-        - Knowledge of inhibition mechanism (from Mechanisms section or literature)
-        
-        **Step-by-step:**
-        1. **Select inhibition type** - Competitive, Non-competitive, or Uncompetitive
-        2. **Enter IC50** - From your experimental measurements (must be in µM)
-        3. **Enter [S]** - Substrate concentration used during IC50 measurement (µM)
-        4. **Enter Km** - Michaelis constant for your enzyme-substrate pair (µM)
-        5. **Read Ki** - Automatically calculated using the appropriate Cheng-Prusoff equation
-        
-        **Important:** All three values (IC50, [S], Km) must use the **same concentration units** (e.g., all µM or all nM).
-        
-        **The Math:**
-        - **Competitive:** Ki = IC50 / (1 + [S]/Km) - Ki is always less than IC50
-        - **Non-competitive:** Ki = IC50 - No correction needed
-        - **Uncompetitive:** Ki = IC50 / (1 + Km/[S]) - Ki depends on substrate level
-        
-        ---
+        st.info("""
+        💡 **What is Ki?**  
+        Ki is the "true" binding strength between your inhibitor and enzyme - it doesn't change with different assay conditions. 
+        Think of it as the fundamental measure of how tightly they stick together!
         """)
+        
+        with st.expander("🎯 Why Ki is Better Than IC50", expanded=False):
+            st.write("""
+            Here's the thing about IC50 - it changes depending on your experiment setup! Same drug, different substrate 
+            concentration? Different IC50. But Ki stays constant:
+            
+            - **IC50 varies with assay conditions** (substrate, enzyme, incubation time)
+            - **Ki is the real deal** - constant for a given inhibitor-enzyme pair
+            - **Fair comparisons** - Compare data from different labs reliably
+            - **Better predictions** - Ki tells you what happens in cells, not just test tubes
+            
+            **Example:** An inhibitor might show IC50 = 10 µM in your assay, but the true Ki could be just 1 µM - 
+            10 times more potent! This happens with competitive inhibitors when you use high substrate concentrations.
+            """)
+        
+        with st.expander("🧮 How to Use This Tool (Cheng-Prusoff Equations)", expanded=False):
+            st.write("""
+            This calculator converts your IC50 into Ki using the proper equation for your inhibition type.
+            
+            **What you'll need:**
+            - IC50 from your experiment (or use Tab 1 calculator)
+            - Substrate concentration [S] you used when measuring IC50
+            - Km value for your enzyme (find it in literature or measure it)
+            - Inhibition mechanism (check out the Mechanisms section if unsure!)
+            
+            **Simple steps:**
+            1. Pick your inhibition type from the dropdown
+            2. Enter your IC50 value (µM)
+            3. Enter the [S] you used in your assay (µM)
+            4. Enter Km for your enzyme (µM)
+            5. Boom! Ki is calculated automatically
+            
+            ⚠️ **Units matter!** Make sure IC50, [S], and Km all use the same units (µM recommended).
+            
+            **Quick formulas:**
+            - **Competitive:** Ki = IC50 ÷ (1 + [S]/Km) → Ki always smaller than IC50
+            - **Non-competitive:** Ki = IC50 → No correction needed!
+            - **Uncompetitive:** Ki = IC50 ÷ (1 + Km/[S]) → Depends on substrate
+            """)
         
         col1, col2 = st.columns([1, 1])
         
