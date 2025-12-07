@@ -174,10 +174,8 @@ def show_overview():
     with col1:
         st.markdown("""
         <div class="info-card">
-        <h3>🚀 Enzyme Inhibitors in Drug Development</h3>
-         Enzyme inhibitors are molecules that bind to enzymes and prevent their activity. This is one of the most successful strategies and offers a huge advantage to modern drug development by enabling the targeting of specific enzymes involved in disease pathways with remarkable precision and efficacy.
-        targeting specific enzymes involved in disease pathways with remarkable precision and efficacy. 
-        Understanding enzyme inhibition principles is fundamental to modern drug discovery and design.
+        <h3>🚀 What is enzyme inhibitor?</h3>
+        Enzyme inhibitors are molecules that bind to enzymes and prevent their activity. This is one of the most successful strategies and offers a huge advantage to modern drug development by enabling the targeting of specific enzymes involved in disease pathways with remarkable precision and efficacy.
         </div>
         """, unsafe_allow_html=True)
         
@@ -917,7 +915,7 @@ def show_mechanisms():
         
         # Info box for LB plot showing intercept values (if annotations toggled)
         if show_intercepts:
-              lb_info = "**Intercept Values:**\n\n"
+            lb_info = "**Intercept Values:**\n\n"
             lb_info += f"🔵 **No Inhibitor:**\n"
             lb_info += f"  • Y-intercept (⚫) = 1/Vmax = {y_intercept_no_inh:.4f}\n"
             lb_info += f"  • X-intercept (◼) = -1/Km = {x_intercept_no_inh:.4f}\n\n"
