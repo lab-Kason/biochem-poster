@@ -595,20 +595,55 @@ def show_mechanisms():
         # Interactive kinetics plot
         st.subheader("📈 Kinetic Effects")
         
-        km = st.slider("Km value (mM)", 0.1, 10.0, 1.0, 0.1, key="km_slider",
+        # Add reset button at the top
+        col_reset, col_space = st.columns([1, 3])
+        with col_reset:
+            if st.button("🔄 Reset to Defaults", help="Reset all parameters to default values"):
+                st.rerun()
+        
+        km = st.slider("Km (substrate affinity)", 0.1, 10.0, 1.0, 0.1, key="km_slider",
                       help="Michaelis constant: substrate concentration at half Vmax (lower = higher affinity)")
-        vmax = st.slider("Vmax (µmol/min)", 1, 100, 50, 1, key="vmax_slider",
+        vmax = st.slider("Vmax (maximum velocity)", 1, 100, 50, 1, key="vmax_slider",
                         help="Maximum reaction velocity when enzyme is fully saturated with substrate")
         
-        # Add inhibitor strength control
+        # Add inhibitor strength control - ENHANCED with [I] and Ki
         show_inhibitor = st.checkbox("Show Inhibitor Effect", value=True, key="show_inh_mech")
+        
         if show_inhibitor:
-            inhibitor_strength = st.slider("Inhibitor Strength (alpha)", 1.0, 5.0, 2.0, 0.1, 
-                                          key="alpha_slider",
-                                          help="Higher values = stronger inhibition (alpha = 1 + [I]/Ki)")
+            st.markdown("**Inhibitor Parameters:**")
+            inhibitor_conc = st.slider("[I] Inhibitor Concentration (µM)", 0.0, 10.0, 2.0, 0.5, 
+                                      key="inhibitor_conc_slider",
+                                      help="Concentration of inhibitor added to the reaction")
+            ki_value = st.slider("Ki (inhibitor binding constant)", 0.5, 5.0, 1.0, 0.1, 
+                                key="ki_slider",
+                                help="Dissociation constant for enzyme-inhibitor complex (lower = stronger binding)")
+            
+            # Calculate alpha from [I] and Ki
+            inhibitor_strength = 1 + (inhibitor_conc / ki_value) if ki_value > 0 else 1.0
+            
+            # Display calculated alpha
+            st.info(f"**Calculated α = {inhibitor_strength:.2f}** (where α = 1 + [I]/Ki)")
+        
+        # Add annotation toggles
+        st.markdown("**Plot Annotations:**")
+        show_km_line = st.checkbox("Show Km reference line", value=False, key="show_km_line",
+                                   help="Vertical line at Km on MM plot")
+        show_vmax_line = st.checkbox("Show Vmax/2 reference line", value=False, key="show_vmax_line",
+                                     help="Horizontal line at Vmax/2 on MM plot")
+        show_intercepts = st.checkbox("Show LB intercept labels", value=True, key="show_intercepts",
+                                     help="Label Y-intercept (1/Vmax) and X-intercept (-1/Km) on LB plot")
         
         # Create two columns for MM and LB plots side by side
         plot_col1, plot_col2 = st.columns(2)
+        
+        # Determine color based on mechanism
+        mechanism_colors = {
+            "Competitive Inhibition": "red",
+            "Non-competitive Inhibition": "orange",
+            "Uncompetitive Inhibition": "purple",
+            "Mixed Inhibition": "green"
+        }
+        inhibitor_color = mechanism_colors.get(mechanism, "red")
         
         with plot_col1:
             st.markdown("**Michaelis-Menten Plot**")
@@ -622,27 +657,52 @@ def show_mechanisms():
                                    name='No Inhibitor', line=dict(color='blue', width=2)))
             
             if show_inhibitor:
-                alpha = inhibitor_strength  # Use slider value
+                alpha = inhibitor_strength  # Use calculated value
                 
                 if mechanism == "Competitive Inhibition":
                     velocity_inhibitor = vmax * substrate / (km * alpha + substrate)
+                    apparent_km = km * alpha
+                    apparent_vmax = vmax
                 elif mechanism == "Non-competitive Inhibition":
                     velocity_inhibitor = (vmax / alpha) * substrate / (km + substrate)
+                    apparent_km = km
+                    apparent_vmax = vmax / alpha
                 elif mechanism == "Uncompetitive Inhibition":
                     velocity_inhibitor = (vmax / alpha) * substrate / (km / alpha + substrate)
+                    apparent_km = km / alpha
+                    apparent_vmax = vmax / alpha
                 else:  # Mixed Inhibition
                     alpha_prime = alpha * 0.75  # Non-competitive component (75% of alpha)
                     velocity_inhibitor = (vmax / alpha_prime) * substrate / ((km * alpha / alpha_prime) + substrate)
+                    apparent_km = km * alpha / alpha_prime
+                    apparent_vmax = vmax / alpha_prime
                 
                 fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_inhibitor, 
-                                       name='With Inhibitor', line=dict(color='red', dash='dash', width=2)))
+                                       name='With Inhibitor', line=dict(color=inhibitor_color, dash='dash', width=2)))
+            
+            # Add annotation lines if toggled
+            if show_km_line:
+                fig_mm.add_vline(x=km, line_dash="dot", line_color="gray", 
+                               annotation_text=f"Km = {km:.1f}", annotation_position="top")
+                if show_inhibitor and mechanism == "Competitive Inhibition":
+                    fig_mm.add_vline(x=apparent_km, line_dash="dot", line_color=inhibitor_color, 
+                                   annotation_text=f"Apparent Km = {apparent_km:.1f}", 
+                                   annotation_position="bottom")
+            
+            if show_vmax_line:
+                fig_mm.add_hline(y=vmax/2, line_dash="dot", line_color="gray", 
+                               annotation_text=f"Vmax/2 = {vmax/2:.1f}", annotation_position="right")
+                if show_inhibitor:
+                    fig_mm.add_hline(y=apparent_vmax/2, line_dash="dot", line_color=inhibitor_color, 
+                                   annotation_text=f"Apparent Vmax/2 = {apparent_vmax/2:.1f}", 
+                                   annotation_position="left")
             
             fig_mm.update_layout(
                 xaxis_title="[S] (mM)",
                 yaxis_title="v (µmol/min)",
                 height=400,
                 showlegend=True,
-                legend=dict(x=0.7, y=0.1),
+                legend=dict(x=0.6, y=0.1),
                 margin=dict(l=10, r=10, t=30, b=10)
             )
             st.plotly_chart(fig_mm, use_container_width=True)
@@ -672,19 +732,31 @@ def show_mechanisms():
                 marker=dict(size=6)
             ))
             
+            # Calculate and store intercepts for annotation
+            y_intercept_no_inh = 1 / vmax
+            x_intercept_no_inh = -1 / km
+            
             # Add inhibitor conditions
             if show_inhibitor:
                 alpha = inhibitor_strength
                 
                 if mechanism == "Competitive Inhibition":
                     velocity_inh_lb = vmax * substrate_conc_lb / (km * alpha + substrate_conc_lb)
+                    apparent_km_lb = km * alpha
+                    apparent_vmax_lb = vmax
                 elif mechanism == "Non-competitive Inhibition":
                     velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km + substrate_conc_lb)
+                    apparent_km_lb = km
+                    apparent_vmax_lb = vmax / alpha
                 elif mechanism == "Uncompetitive Inhibition":
                     velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km / alpha + substrate_conc_lb)
+                    apparent_km_lb = km / alpha
+                    apparent_vmax_lb = vmax / alpha
                 else:  # Mixed Inhibition
                     alpha_prime = alpha * 0.75
                     velocity_inh_lb = (vmax / alpha_prime) * substrate_conc_lb / ((km * alpha / alpha_prime) + substrate_conc_lb)
+                    apparent_km_lb = km * alpha / alpha_prime
+                    apparent_vmax_lb = vmax / alpha_prime
                 
                 reciprocal_v_inh = 1 / velocity_inh_lb
                 
@@ -693,9 +765,63 @@ def show_mechanisms():
                     y=reciprocal_v_inh,
                     mode='lines+markers',
                     name='With Inhibitor',
-                    line=dict(color='red', width=2, dash='dash'),
+                    line=dict(color=inhibitor_color, width=2, dash='dash'),
                     marker=dict(size=6)
                 ))
+                
+                # Calculate inhibitor intercepts
+                y_intercept_inh = 1 / apparent_vmax_lb
+                x_intercept_inh = -1 / apparent_km_lb
+                
+                # Add intercept annotations if toggled
+                if show_intercepts:
+                    # Mark Y-intercept for no inhibitor
+                    fig_lb.add_annotation(
+                        x=0, y=y_intercept_no_inh,
+                        text=f"1/Vmax = {y_intercept_no_inh:.3f}",
+                        showarrow=True, arrowhead=2, arrowcolor="blue",
+                        ax=40, ay=-20, font=dict(size=9, color="blue")
+                    )
+                    
+                    # Mark X-intercept for no inhibitor
+                    fig_lb.add_annotation(
+                        x=x_intercept_no_inh, y=0,
+                        text=f"-1/Km = {x_intercept_no_inh:.3f}",
+                        showarrow=True, arrowhead=2, arrowcolor="blue",
+                        ax=-20, ay=40, font=dict(size=9, color="blue")
+                    )
+                    
+                    # Mark Y-intercept for inhibitor
+                    fig_lb.add_annotation(
+                        x=0, y=y_intercept_inh,
+                        text=f"1/Vmax' = {y_intercept_inh:.3f}",
+                        showarrow=True, arrowhead=2, arrowcolor=inhibitor_color,
+                        ax=-40, ay=20, font=dict(size=9, color=inhibitor_color)
+                    )
+                    
+                    # Mark X-intercept for inhibitor (if different)
+                    if abs(x_intercept_inh - x_intercept_no_inh) > 0.01:
+                        fig_lb.add_annotation(
+                            x=x_intercept_inh, y=0,
+                            text=f"-1/Km' = {x_intercept_inh:.3f}",
+                            showarrow=True, arrowhead=2, arrowcolor=inhibitor_color,
+                            ax=20, ay=-40, font=dict(size=9, color=inhibitor_color)
+                        )
+            else:
+                # Show intercepts even without inhibitor if toggled
+                if show_intercepts:
+                    fig_lb.add_annotation(
+                        x=0, y=y_intercept_no_inh,
+                        text=f"1/Vmax = {y_intercept_no_inh:.3f}",
+                        showarrow=True, arrowhead=2, arrowcolor="blue",
+                        ax=40, ay=-20, font=dict(size=9, color="blue")
+                    )
+                    fig_lb.add_annotation(
+                        x=x_intercept_no_inh, y=0,
+                        text=f"-1/Km = {x_intercept_no_inh:.3f}",
+                        showarrow=True, arrowhead=2, arrowcolor="blue",
+                        ax=-20, ay=40, font=dict(size=9, color="blue")
+                    )
             
             fig_lb.update_layout(
                 xaxis_title='1/[S] (1/mM)',
@@ -711,6 +837,74 @@ def show_mechanisms():
             fig_lb.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
             
             st.plotly_chart(fig_lb, use_container_width=True)
+        
+        # Add numeric readouts of calculated parameters
+        if show_inhibitor:
+            st.markdown("---")
+            st.markdown("### 📊 Calculated Kinetic Parameters")
+            
+            col_param1, col_param2, col_param3, col_param4 = st.columns(4)
+            
+            with col_param1:
+                st.metric(
+                    label="Km (no inhibitor)",
+                    value=f"{km:.2f} mM",
+                    help="Michaelis constant - substrate concentration at half Vmax"
+                )
+            
+            with col_param2:
+                st.metric(
+                    label="Apparent Km (with inhibitor)",
+                    value=f"{apparent_km:.2f} mM",
+                    delta=f"{((apparent_km - km) / km * 100):.1f}%",
+                    delta_color="inverse",
+                    help="Effective Km in presence of inhibitor"
+                )
+            
+            with col_param3:
+                st.metric(
+                    label="Vmax (no inhibitor)",
+                    value=f"{vmax:.1f} µmol/min",
+                    help="Maximum reaction velocity"
+                )
+            
+            with col_param4:
+                st.metric(
+                    label="Apparent Vmax (with inhibitor)",
+                    value=f"{apparent_vmax:.1f} µmol/min",
+                    delta=f"{((apparent_vmax - vmax) / vmax * 100):.1f}%",
+                    delta_color="inverse",
+                    help="Effective Vmax in presence of inhibitor"
+                )
+            
+            # Additional metrics row
+            col_eff1, col_eff2, col_eff3 = st.columns(3)
+            
+            with col_eff1:
+                catalytic_eff = vmax / km
+                st.metric(
+                    label="Catalytic Efficiency (Vmax/Km)",
+                    value=f"{catalytic_eff:.2f}",
+                    help="Ratio of Vmax to Km - higher is more efficient"
+                )
+            
+            with col_eff2:
+                apparent_eff = apparent_vmax / apparent_km
+                st.metric(
+                    label="Apparent Efficiency (with inhibitor)",
+                    value=f"{apparent_eff:.2f}",
+                    delta=f"{((apparent_eff - catalytic_eff) / catalytic_eff * 100):.1f}%",
+                    delta_color="inverse",
+                    help="Effective catalytic efficiency with inhibitor"
+                )
+            
+            with col_eff3:
+                fold_change = catalytic_eff / apparent_eff if apparent_eff > 0 else 0
+                st.metric(
+                    label="Fold Inhibition",
+                    value=f"{fold_change:.2f}x",
+                    help="How many times less efficient the enzyme is with inhibitor"
+                )
         
         # Add interpretation below both plots
         st.info(f"""
