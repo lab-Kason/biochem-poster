@@ -694,6 +694,38 @@ def show_calculator():
         st.subheader("IC50 Calculator")
         st.write("**IC50** (Half maximal inhibitory concentration): The concentration of inhibitor required to reduce enzyme activity by 50%.")
         
+        # Description and importance
+        st.markdown("""---
+        ### 🎯 Why This Calculator is Essential
+        
+        IC50 is the **gold standard metric** in drug discovery for measuring inhibitor potency. Every pharmaceutical 
+        company uses IC50 values to:
+        - **Rank drug candidates** - Compare which compounds are most potent
+        - **Set dosing guidelines** - Determine therapeutic dose ranges
+        - **Predict efficacy** - Lower IC50 often correlates with better clinical outcomes
+        - **Optimize lead compounds** - Track improvement during medicinal chemistry
+        
+        **Real-world impact:** The difference between a drug that makes it to market vs. one that fails often comes 
+        down to IC50 values. For example, HIV protease inhibitors with IC50 < 10 nM became blockbuster drugs, while 
+        those with IC50 > 100 nM were abandoned.
+        
+        ### 📊 How to Use This Calculator
+        
+        **You'll need:** Experimental data from enzyme activity assays
+        
+        **Step-by-step:**
+        1. **Choose number of data points** (5-7 recommended for accuracy)
+        2. **Enter inhibitor concentrations** - Use a range spanning 2-3 orders of magnitude (e.g., 0.1, 1, 10, 100 µM)
+        3. **Enter corresponding enzyme activities** - Measured as % of control (no inhibitor = 100%)
+        4. **View results** - IC50 calculated automatically with dose-response curve
+        5. **Export data** - Download CSV for your lab notebook or report
+        
+        **Pro tip:** For best results, include concentrations both above and below your expected IC50. 
+        The curve must cross 50% activity for calculation to work.
+        
+        ---
+        """)
+        
         col1, col2 = st.columns([1, 1])
         
         with col1:
@@ -823,6 +855,48 @@ def show_calculator():
         st.subheader("Ki Calculator (Inhibition Constant)")
         st.write("**Ki**: Dissociation constant of the enzyme-inhibitor complex. Lower Ki = Stronger binding.")
         
+        # Description and importance
+        st.markdown("""---
+        ### 🎯 Why This Calculator is Essential
+        
+        Ki is the **true thermodynamic binding constant** - it tells you the actual affinity between enzyme and inhibitor, 
+        independent of assay conditions. This is critical because:
+        
+        - **IC50 depends on assay conditions** - Same inhibitor can have different IC50 values depending on 
+          substrate concentration, enzyme concentration, and incubation time
+        - **Ki is mechanism-independent** - A competitive inhibitor's Ki remains constant regardless of [S]
+        - **Enables fair comparison** - Compare inhibitors tested in different labs under different conditions
+        - **Structure-activity relationships** - Ki correlates directly with binding energy (ΔG = RT ln Ki)
+        - **Predicts in vivo behavior** - Ki better predicts drug efficacy than IC50
+        
+        **Example:** An inhibitor with IC50 = 10 µM tested at high [S] might have Ki = 1 µM (10x more potent than 
+        IC50 suggests!). This happens with competitive inhibitors due to substrate competition.
+        
+        ### 🧮 How to Use This Calculator (Cheng-Prusoff Equations)
+        
+        **You'll need:**
+        - IC50 value (from calculator Tab 1 or your experiments)
+        - Substrate concentration [S] used in your IC50 assay
+        - Km value for your enzyme (from literature or Michaelis-Menten experiments)
+        - Knowledge of inhibition mechanism (from Lineweaver-Burk plots or literature)
+        
+        **Step-by-step:**
+        1. **Select inhibition type** - Competitive, Non-competitive, or Uncompetitive
+        2. **Enter IC50** - From your experimental measurements (must be in µM)
+        3. **Enter [S]** - Substrate concentration used during IC50 measurement (µM)
+        4. **Enter Km** - Michaelis constant for your enzyme-substrate pair (µM)
+        5. **Read Ki** - Automatically calculated using the appropriate Cheng-Prusoff equation
+        
+        **Important:** All three values (IC50, [S], Km) must use the **same concentration units** (e.g., all µM or all nM).
+        
+        **The Math:**
+        - **Competitive:** Ki = IC50 / (1 + [S]/Km) - Ki is always less than IC50
+        - **Non-competitive:** Ki = IC50 - No correction needed
+        - **Uncompetitive:** Ki = IC50 / (1 + Km/[S]) - Ki depends on substrate level
+        
+        ---
+        """)
+        
         col1, col2 = st.columns([1, 1])
         
         with col1:
@@ -896,6 +970,53 @@ Ki represents the dissociation constant for the ESI complex.
     
     with tab3:
         st.subheader("Dose-Response Curve Generator")
+        
+        # Description and importance
+        st.markdown("""---
+        ### 🎯 Why This Calculator is Essential
+        
+        The Hill equation is the **fundamental mathematical model** for dose-response relationships in pharmacology. 
+        Understanding this curve is crucial for:
+        
+        - **Experimental design** - Predict what concentration range to test before doing expensive experiments
+        - **Data presentation** - Generate publication-quality curves for papers and presentations
+        - **Teaching tool** - Visualize how IC50, Hill slope, and activity range affect curve shape
+        - **Quality control** - Recognize aberrant data that doesn't fit the Hill equation
+        - **Drug comparison** - Compare theoretical curves of different inhibitors side-by-side
+        
+        **Hill slope interpretation:**
+        - **h = 1.0** (standard) → Non-cooperative binding, typical for most enzyme inhibitors
+        - **h > 1.0** (steep) → Positive cooperativity or multiple binding sites (e.g., h = 2-4)
+        - **h < 1.0** (shallow) → Negative cooperativity or heterogeneous binding
+        
+        **Real example:** Imatinib (Gleevec) for CML has Hill slope ≈ 1.0 and IC50 = 0.1 µM against BCR-ABL kinase, 
+        producing the characteristic sigmoidal curve you'll generate here.
+        
+        ### 📈 How to Use This Generator
+        
+        **Purpose:** Create theoretical dose-response curves without needing experimental data
+        
+        **Step-by-step:**
+        1. **Set Top Activity** - Usually 100% (enzyme fully active with no inhibitor)
+        2. **Set Bottom Activity** - Usually 0% (complete inhibition at high [I])
+        3. **Enter desired IC50** - The concentration where curve crosses midpoint (µM)
+        4. **Adjust Hill Slope** - Start with 1.0 (standard), then experiment:
+           - Try h = 2.0 to see cooperative binding
+           - Try h = 0.5 to see negative cooperativity
+        5. **Set Max Concentration** - Determines X-axis range (typically 100-1000× your IC50)
+        6. **Interpret curve** - Steeper slopes mean sharper on/off switching behavior
+        
+        **Uses:**
+        - **Before experiments:** "If my IC50 is ~5 µM, what concentrations should I test?"
+        - **For presentations:** Generate clean example curves to explain concepts
+        - **Parameter exploration:** See how changing IC50 or Hill slope affects the curve
+        - **Compare inhibitors:** Generate multiple curves with different IC50 values
+        
+        **Pro tip:** In drug development, you want Hill slope ≈ 1.0. Very steep curves (h > 3) can mean 
+        narrow therapeutic windows (small difference between effective and toxic doses).
+        
+        ---
+        """)
         
         col1, col2 = st.columns([1, 1])
         
