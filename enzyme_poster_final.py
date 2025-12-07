@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -175,7 +175,7 @@ def show_overview():
         st.markdown("""
         <div class="info-card">
         <h3>🚀 Enzyme Inhibitors in Drug Development</h3>
-        Enzyme inhibitors represent one of the most successful strategies in pharmaceutical drug development, 
+         Enzyme inhibitors are molecules that bind to enzymes and prevent their activity. This is one of the most successful strategies and offers a huge advantage to modern drug development by enabling the targeting of specific enzymes involved in disease pathways with remarkable precision and efficacy.
         targeting specific enzymes involved in disease pathways with remarkable precision and efficacy. 
         Understanding enzyme inhibition principles is fundamental to modern drug discovery and design.
         </div>
@@ -627,8 +627,17 @@ def show_mechanisms():
             # Calculate alpha from [I] and Ki
             inhibitor_strength = 1 + (inhibitor_conc / ki_value) if ki_value > 0 else 1.0
             
-            # Display calculated alpha
-            st.info(f"**Calculated α = {inhibitor_strength:.2f}** (where α = 1 + [I]/Ki)")
+            # For mixed inhibition: add alpha' slider
+            if mechanism == "Mixed Inhibition":
+                alpha_prime_value = st.slider("α' (Alpha Prime - Non-competitive Component)", 
+                                             1.0, 10.0, inhibitor_strength * 0.8, 0.1,
+                                             key="alpha_prime_slider",
+                                             help="Independent parameter controlling Vmax reduction (α' ≠ α for mixed inhibition)")
+                st.info(f"**Calculated α = {inhibitor_strength:.2f}** (affects Km) and **α' = {alpha_prime_value:.2f}** (affects Vmax)")
+            else:
+                alpha_prime_value = inhibitor_strength
+                # Display calculated alpha
+                st.info(f"**Calculated α = {inhibitor_strength:.2f}** (where α = 1 + [I]/Ki)")
         
         # Add annotation toggles
         st.markdown("**Plot Annotations:**")
@@ -661,28 +670,28 @@ def show_mechanisms():
                                name='No Inhibitor', line=dict(color='blue', width=2)))
         
         if show_inhibitor:
-                alpha = inhibitor_strength  # Use calculated value
-                
-                if mechanism == "Competitive Inhibition":
-                    velocity_inhibitor = vmax * substrate / (km * alpha + substrate)
-                    apparent_km = km * alpha
-                    apparent_vmax = vmax
-                elif mechanism == "Non-competitive Inhibition":
-                    velocity_inhibitor = (vmax / alpha) * substrate / (km + substrate)
-                    apparent_km = km
-                    apparent_vmax = vmax / alpha
-                elif mechanism == "Uncompetitive Inhibition":
-                    velocity_inhibitor = (vmax / alpha) * substrate / (km / alpha + substrate)
-                    apparent_km = km / alpha
-                    apparent_vmax = vmax / alpha
-                else:  # Mixed Inhibition
-                    alpha_prime = alpha * 0.75  # Non-competitive component (75% of alpha)
-                    velocity_inhibitor = (vmax / alpha_prime) * substrate / ((km * alpha / alpha_prime) + substrate)
-                    apparent_km = km * alpha / alpha_prime
-                    apparent_vmax = vmax / alpha_prime
-                
-                fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_inhibitor, 
-                                   name='With Inhibitor', line=dict(color=inhibitor_color, dash='dash', width=2)))
+            alpha = inhibitor_strength  # Use calculated value
+            alpha_prime = alpha_prime_value  # Use slider value for mixed inhibition
+            
+            if mechanism == "Competitive Inhibition":
+                velocity_inhibitor = vmax * substrate / (km * alpha + substrate)
+                apparent_km = km * alpha
+                apparent_vmax = vmax
+            elif mechanism == "Non-competitive Inhibition":
+                velocity_inhibitor = (vmax / alpha) * substrate / (km + substrate)
+                apparent_km = km
+                apparent_vmax = vmax / alpha
+            elif mechanism == "Uncompetitive Inhibition":
+                velocity_inhibitor = (vmax / alpha) * substrate / (km / alpha + substrate)
+                apparent_km = km / alpha
+                apparent_vmax = vmax / alpha
+            else:  # Mixed Inhibition
+                velocity_inhibitor = (vmax / alpha_prime) * substrate / ((km * alpha / alpha_prime) + substrate)
+                apparent_km = km * alpha / alpha_prime
+                apparent_vmax = vmax / alpha_prime
+            
+            fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_inhibitor, 
+                               name='With Inhibitor', line=dict(color=inhibitor_color, dash='dash', width=2)))
         
         # Add annotation lines if toggled (NO TEXT to avoid overlap)
         if show_km_line:
@@ -793,7 +802,7 @@ def show_mechanisms():
                 apparent_km_lb = km / alpha
                 apparent_vmax_lb = vmax / alpha
             else:  # Mixed Inhibition
-                alpha_prime = alpha * 0.75
+                alpha_prime = alpha_prime_value
                 velocity_inh_lb = (vmax / alpha_prime) * substrate_conc_lb / ((km * alpha / alpha_prime) + substrate_conc_lb)
                 apparent_km_lb = km * alpha / alpha_prime
                 apparent_vmax_lb = vmax / alpha_prime
@@ -908,7 +917,7 @@ def show_mechanisms():
         
         # Info box for LB plot showing intercept values (if annotations toggled)
         if show_intercepts:
-            lb_info = "**Intercept Values:**\n\n"
+              lb_info = "**Intercept Values:**\n\n"
             lb_info += f"🔵 **No Inhibitor:**\n"
             lb_info += f"  • Y-intercept (⚫) = 1/Vmax = {y_intercept_no_inh:.4f}\n"
             lb_info += f"  • X-intercept (◼) = -1/Km = {x_intercept_no_inh:.4f}\n\n"
