@@ -86,7 +86,7 @@ def create_header():
             
             ---
             
-            ### 📋 Six Interactive Sections:
+            ### 📋 Five Interactive Sections:
             
             **1. 🏠 Overview**
             - Statistics on enzyme inhibitor drugs
@@ -95,9 +95,10 @@ def create_header():
             
             **2. ⚙️ Mechanisms**
             - Interactive simulator for 4 inhibition types
-            - Real-time kinetic curve visualization
+            - **Dual visualization:** Michaelis-Menten + Lineweaver-Burk plots side-by-side
             - Adjustable parameters (Km, Vmax, inhibitor strength)
-            - *Best for: Learning how inhibitors work*
+            - See how each mechanism affects both curve types simultaneously
+            - *Best for: Learning how inhibitors work AND identifying mechanisms*
             
             **3. 📚 Drug Development Case Studies**
             - 5 blockbuster enzyme inhibitor drugs: Discovery to market
@@ -105,19 +106,14 @@ def create_header():
             - Market impact and patient outcomes data
             - *Best for: Understanding complete drug development process*
             
-            **4. 📊 Lineweaver-Burk Plot**
-            - Linear transformation for Km and Vmax determination in drug screening
-            - Compare different inhibition types to guide drug design
-            - *Best for: Identifying inhibition mechanisms in drug candidates*
-            
-            **5. 🧮 Calculator**
+            **4. 🧮 Calculator**
             - IC50 calculator (with CSV export)
             - Ki calculator (Cheng-Prusoff equations)
             - Dose-response curve generator
             - *Best for: Analyzing your experimental data*
             
-            **6. 📖 References**
-            - 26 peer-reviewed papers
+            **5. 📖 References**
+            - 26+ peer-reviewed papers
             - Online databases and resources
             - *Best for: Citations and further reading*
             
@@ -138,8 +134,8 @@ def create_header():
         # Navigation
         selected = option_menu(
             menu_title=None,
-            options=["Overview", "Mechanisms", "Case Studies", "Lineweaver-Burk", "Calculator", "References"],
-            icons=["house", "gear", "book", "graph-up", "calculator", "journal-text"],
+            options=["Overview", "Mechanisms", "Case Studies", "Calculator", "References"],
+            icons=["house", "gear", "book", "calculator", "journal-text"],
             menu_icon="cast",
             default_index=0,
             orientation="horizontal",
@@ -292,7 +288,7 @@ def show_overview():
         - See: **Case Studies** section
         
         **Stage 6:** Lineweaver-Burk analysis confirms mechanism
-        - See: **Lineweaver-Burk** section
+        - See: **Mechanisms** section (includes Lineweaver-Burk plots)
         """)
         
         st.info("""**This app covers:** Stages 1-3 (mechanism understanding, kinetic analysis, potency optimization) 
@@ -305,33 +301,69 @@ def show_mechanisms():
     # User Guide for Mechanisms
     with st.expander("📖 How to Use This Interactive Simulator", expanded=False):
         st.markdown("""
-        **Interactive Enzyme Inhibition Simulator**
+        **Interactive Enzyme Inhibition Simulator with Dual Visualization**
+        
+        **What's New:** Each inhibition type now shows **BOTH** visualization methods side-by-side:
+        - **Left plot:** Michaelis-Menten curve (hyperbolic)
+        - **Right plot:** Lineweaver-Burk plot (linear transformation)
+        - **Same sliders control both plots** - see the relationship instantly!
+        
+        ---
         
         **Step-by-Step Guide:**
         1. **Select inhibition type** from dropdown (left panel)
         2. **Read the mechanism description** to understand how it works
-        3. **Adjust Km slider** (0.1-10.0) - substrate binding affinity
-        4. **Adjust Vmax slider** (1-100) - maximum reaction velocity
+        3. **Adjust Km slider** (0.1-10.0 mM) - substrate binding affinity
+        4. **Adjust Vmax slider** (1-100 µmol/min) - maximum reaction velocity
         5. **Toggle "Show Inhibitor Effect"** checkbox to compare curves
         6. **Use Inhibitor Strength (α) slider** (1.0-5.0) to see dose-dependent effects
+        7. **Compare both plots** - see how MM curves transform into LB lines!
         
         **Understanding the Parameters:**
         - **Km:** Lower values = enzyme has higher affinity for substrate
         - **Vmax:** Higher values = enzyme can work faster
-        - **α (alpha):** Inhibitor strength factor (higher = stronger inhibition)
+        - **α (alpha):** Inhibitor strength factor where α = 1 + [I]/Ki (higher = stronger inhibition)
         
-        **Interpreting the Plot:**
+        **Interpreting the Dual Plots:**
+        
+        **Michaelis-Menten Plot (Left):**
         - **Blue curve:** Normal enzyme activity (no inhibitor)
         - **Red dashed curve:** Activity with inhibitor present
-        - Watch how different mechanisms affect curve shape!
+        - Watch how curve shape changes with different mechanisms
         
-        **What to Observe:**
-        - **Competitive:** Can't reach same Vmax at low [S], but can at high [S]
-        - **Non-competitive:** Vmax reduced, but Km appears unchanged
-        - **Uncompetitive:** Both Vmax and apparent Km reduced
-        - **Mixed:** Combination of competitive and non-competitive effects
+        **Lineweaver-Burk Plot (Right):**
+        - **Linear transformation:** 1/v vs 1/[S]
+        - **Y-intercept = 1/Vmax**
+        - **X-intercept = -1/Km**
+        - **Key advantage:** Line intersection patterns identify mechanisms!
         
-        *Try different combinations to see how each parameter affects enzyme kinetics!*
+        **What to Observe for Each Mechanism:**
+        
+        **Competitive Inhibition:**
+        - MM: Can reach same Vmax at high [S], but needs more substrate
+        - LB: Lines intersect on Y-axis (same Vmax, different Km)
+        
+        **Non-competitive Inhibition:**
+        - MM: Lower plateau (Vmax reduced), same curve shape
+        - LB: Lines intersect on X-axis (same Km, different Vmax)
+        
+        **Uncompetitive Inhibition:**
+        - MM: Both Vmax and apparent Km reduced proportionally
+        - LB: Lines are parallel (both intercepts change equally)
+        
+        **Mixed Inhibition:**
+        - MM: Combination of competitive and non-competitive effects
+        - LB: Lines intersect in 2nd quadrant (off both axes)
+        
+        ---
+        
+        **Why This Dual View is Powerful:**
+        - See the **same data** in two complementary ways
+        - MM plots show biological reality (velocity curves)
+        - LB plots reveal mathematical relationships (easier to extract Km, Vmax)
+        - Together they provide complete mechanistic understanding
+        
+        *Try adjusting the sliders and watch how both plots respond together!*
         """)
     
     col1, col2 = st.columns([1, 2])
@@ -563,9 +595,9 @@ def show_mechanisms():
         # Interactive kinetics plot
         st.subheader("📈 Kinetic Effects")
         
-        km = st.slider("Km value (affinity)", 0.1, 10.0, 1.0, 0.1, key="km_slider",
+        km = st.slider("Km value (mM)", 0.1, 10.0, 1.0, 0.1, key="km_slider",
                       help="Michaelis constant: substrate concentration at half Vmax (lower = higher affinity)")
-        vmax = st.slider("Vmax (maximum velocity)", 1, 100, 50, 1, key="vmax_slider",
+        vmax = st.slider("Vmax (µmol/min)", 1, 100, 50, 1, key="vmax_slider",
                         help="Maximum reaction velocity when enzyme is fully saturated with substrate")
         
         # Add inhibitor strength control
@@ -573,39 +605,131 @@ def show_mechanisms():
         if show_inhibitor:
             inhibitor_strength = st.slider("Inhibitor Strength (alpha)", 1.0, 5.0, 2.0, 0.1, 
                                           key="alpha_slider",
-                                          help="Higher values = stronger inhibition")
+                                          help="Higher values = stronger inhibition (alpha = 1 + [I]/Ki)")
         
-        # Generate kinetic curves
-        substrate = np.linspace(0.1, 20, 100)
-        velocity_no_inhibitor = vmax * substrate / (km + substrate)
+        # Create two columns for MM and LB plots side by side
+        plot_col1, plot_col2 = st.columns(2)
         
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=substrate, y=velocity_no_inhibitor, 
-                               name='No Inhibitor', line=dict(color='blue')))
-        
-        if show_inhibitor:
-            alpha = inhibitor_strength  # Use slider value
+        with plot_col1:
+            st.markdown("**Michaelis-Menten Plot**")
             
-            if mechanism == "Competitive Inhibition":
-                velocity_inhibitor = vmax * substrate / (km * alpha + substrate)
-            elif mechanism == "Non-competitive Inhibition":
-                velocity_inhibitor = (vmax / alpha) * substrate / (km + substrate)
-            elif mechanism == "Uncompetitive Inhibition":
-                velocity_inhibitor = (vmax / alpha) * substrate / (km / alpha + substrate)
-            else:  # Mixed Inhibition
-                alpha_prime = alpha * 0.75  # Non-competitive component (75% of alpha)
-                velocity_inhibitor = (vmax / alpha_prime) * substrate / ((km * alpha / alpha_prime) + substrate)
+            # Generate kinetic curves
+            substrate = np.linspace(0.1, 20, 100)
+            velocity_no_inhibitor = vmax * substrate / (km + substrate)
             
-            fig.add_trace(go.Scatter(x=substrate, y=velocity_inhibitor, 
-                                   name='With Inhibitor', line=dict(color='red', dash='dash')))
+            fig_mm = go.Figure()
+            fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_no_inhibitor, 
+                                   name='No Inhibitor', line=dict(color='blue', width=2)))
+            
+            if show_inhibitor:
+                alpha = inhibitor_strength  # Use slider value
+                
+                if mechanism == "Competitive Inhibition":
+                    velocity_inhibitor = vmax * substrate / (km * alpha + substrate)
+                elif mechanism == "Non-competitive Inhibition":
+                    velocity_inhibitor = (vmax / alpha) * substrate / (km + substrate)
+                elif mechanism == "Uncompetitive Inhibition":
+                    velocity_inhibitor = (vmax / alpha) * substrate / (km / alpha + substrate)
+                else:  # Mixed Inhibition
+                    alpha_prime = alpha * 0.75  # Non-competitive component (75% of alpha)
+                    velocity_inhibitor = (vmax / alpha_prime) * substrate / ((km * alpha / alpha_prime) + substrate)
+                
+                fig_mm.add_trace(go.Scatter(x=substrate, y=velocity_inhibitor, 
+                                       name='With Inhibitor', line=dict(color='red', dash='dash', width=2)))
+            
+            fig_mm.update_layout(
+                xaxis_title="[S] (mM)",
+                yaxis_title="v (µmol/min)",
+                height=400,
+                showlegend=True,
+                legend=dict(x=0.7, y=0.1),
+                margin=dict(l=10, r=10, t=30, b=10)
+            )
+            st.plotly_chart(fig_mm, use_container_width=True)
         
-        fig.update_layout(
-            title=f"Michaelis-Menten Kinetics - {mechanism}",
-            xaxis_title="Substrate Concentration [S]",
-            yaxis_title="Reaction Velocity v",
-            height=400
-        )
-        st.plotly_chart(fig, width='stretch')
+        with plot_col2:
+            st.markdown("**Lineweaver-Burk Plot**")
+            
+            # Generate substrate concentrations for LB plot
+            substrate_conc_lb = np.array([0.5, 1, 2, 4, 8, 16])  # mM
+            
+            # Calculate velocities (no inhibitor)
+            velocity_no_inh_lb = vmax * substrate_conc_lb / (km + substrate_conc_lb)
+            
+            # Lineweaver-Burk transformation
+            reciprocal_s = 1 / substrate_conc_lb
+            reciprocal_v_no_inh = 1 / velocity_no_inh_lb
+            
+            fig_lb = go.Figure()
+            
+            # Plot without inhibitor
+            fig_lb.add_trace(go.Scatter(
+                x=reciprocal_s, 
+                y=reciprocal_v_no_inh,
+                mode='lines+markers',
+                name='No Inhibitor',
+                line=dict(color='blue', width=2),
+                marker=dict(size=6)
+            ))
+            
+            # Add inhibitor conditions
+            if show_inhibitor:
+                alpha = inhibitor_strength
+                
+                if mechanism == "Competitive Inhibition":
+                    velocity_inh_lb = vmax * substrate_conc_lb / (km * alpha + substrate_conc_lb)
+                elif mechanism == "Non-competitive Inhibition":
+                    velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km + substrate_conc_lb)
+                elif mechanism == "Uncompetitive Inhibition":
+                    velocity_inh_lb = (vmax / alpha) * substrate_conc_lb / (km / alpha + substrate_conc_lb)
+                else:  # Mixed Inhibition
+                    alpha_prime = alpha * 0.75
+                    velocity_inh_lb = (vmax / alpha_prime) * substrate_conc_lb / ((km * alpha / alpha_prime) + substrate_conc_lb)
+                
+                reciprocal_v_inh = 1 / velocity_inh_lb
+                
+                fig_lb.add_trace(go.Scatter(
+                    x=reciprocal_s, 
+                    y=reciprocal_v_inh,
+                    mode='lines+markers',
+                    name='With Inhibitor',
+                    line=dict(color='red', width=2, dash='dash'),
+                    marker=dict(size=6)
+                ))
+            
+            fig_lb.update_layout(
+                xaxis_title='1/[S] (1/mM)',
+                yaxis_title='1/v (min/µmol)',
+                height=400,
+                showlegend=True,
+                legend=dict(x=0.05, y=0.95),
+                margin=dict(l=10, r=10, t=30, b=10)
+            )
+            
+            # Add grid for easier interpretation
+            fig_lb.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
+            fig_lb.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', zeroline=True, zerolinewidth=2, zerolinecolor='black')
+            
+            st.plotly_chart(fig_lb, use_container_width=True)
+        
+        # Add interpretation below both plots
+        st.info(f"""
+        **📊 Interpretation for {mechanism}:**
+        
+        **Michaelis-Menten (left):** {
+            "Vmax unchanged, apparent Km increases (shifts right)" if mechanism == "Competitive Inhibition"
+            else "Vmax decreases, Km unchanged (lower plateau)" if mechanism == "Non-competitive Inhibition"
+            else "Both Vmax and Km decrease proportionally" if mechanism == "Uncompetitive Inhibition"
+            else "Both Vmax and apparent Km change"
+        }
+        
+        **Lineweaver-Burk (right):** {
+            "Lines intersect on Y-axis (same 1/Vmax, different X-intercept)" if mechanism == "Competitive Inhibition"
+            else "Lines intersect on X-axis (same -1/Km, different Y-intercept)" if mechanism == "Non-competitive Inhibition"
+            else "Lines are parallel (both intercepts change proportionally)" if mechanism == "Uncompetitive Inhibition"
+            else "Lines intersect in 2nd quadrant (both intercepts change differently)"
+        }
+        """)
 
 # IC50/Ki Calculator Section
 def show_calculator():
@@ -878,7 +1002,7 @@ def show_calculator():
         - IC50 value (from calculator Tab 1 or your experiments)
         - Substrate concentration [S] used in your IC50 assay
         - Km value for your enzyme (from literature or Michaelis-Menten experiments)
-        - Knowledge of inhibition mechanism (from Lineweaver-Burk plots or literature)
+        - Knowledge of inhibition mechanism (from Mechanisms section or literature)
         
         **Step-by-step:**
         1. **Select inhibition type** - Competitive, Non-competitive, or Uncompetitive
@@ -1791,185 +1915,6 @@ def main():
         show_mechanisms()
     elif selected_section == "Case Studies":
         show_case_studies()
-    elif selected_section == "Lineweaver-Burk":
-        st.markdown('<div class="section-header">📊 Lineweaver-Burk Analysis</div>', unsafe_allow_html=True)
-        
-        # User Guide for Lineweaver-Burk
-        with st.expander("📖 How to Use the Lineweaver-Burk Plot", expanded=False):
-            st.markdown("""
-            **Lineweaver-Burk (Double Reciprocal) Plot** 📐
-            
-            **Purpose:** Linear transformation of Michaelis-Menten equation to determine Km and Vmax graphically
-            
-            ---
-            
-            **How to use:**
-            1. Adjust **Vmax slider** (10-200 μmol/min) - maximum velocity
-            2. Adjust **Km slider** (0.5-20 mM) - substrate affinity
-            3. Check **"Add Inhibitor"** to compare with/without inhibition
-            4. Select **inhibition type** (Competitive, Non-competitive, Uncompetitive)
-            5. Set **Ki value** (inhibitor dissociation constant)
-            6. Set **[I]** (inhibitor concentration)
-            
-            ---
-            
-            **Interpreting the plot:**
-            
-            The Lineweaver-Burk plot transforms the hyperbolic Michaelis-Menten equation into a straight line:
-            
-            - **Y-intercept = 1/Vmax** (where the line crosses the Y-axis)
-            - **X-intercept = -1/Km** (where the line crosses the X-axis)
-            - **Slope = Km/Vmax** (steepness of the line)
-            
-            ---
-            
-            **Distinguishing inhibition types:**
-            
-            This is the **key advantage** of Lineweaver-Burk plots - you can visually identify inhibition mechanisms:
-            
-            - **Competitive inhibition:** 
-              - Lines intersect on **Y-axis** (same 1/Vmax)
-              - Different X-intercepts (different apparent Km)
-              - Interpretation: Inhibitor increases Km but doesn't change Vmax
-            
-            - **Non-competitive inhibition:** 
-              - Lines intersect on **X-axis** (same -1/Km)
-              - Different Y-intercepts (different 1/Vmax)
-              - Interpretation: Inhibitor decreases Vmax but doesn't change Km
-            
-            - **Uncompetitive inhibition:** 
-              - Lines are **parallel** (same slope)
-              - Both intercepts change
-              - Interpretation: Both Vmax and Km decrease proportionally
-            
-            ---
-            
-            **Experimental application:**
-            - Plot 1/v vs 1/[S] data from enzyme assays
-            - Add data with and without inhibitor
-            - Identify inhibition type from line intersection pattern
-            - Calculate Km and Vmax from intercepts
-            
-            **Try adjusting the parameters to see how each inhibition type produces different line patterns!**
-            """)
-        
-        st.write("""Linear transformation of Michaelis-Menten kinetics to identify inhibition mechanisms 
-        and determine kinetic parameters graphically.""")  
-        
-        # Main content (no tabs needed)
-        st.subheader("Lineweaver-Burk (Double Reciprocal) Plot")
-        
-        col1, col2 = st.columns([1, 2])
-        
-        with col1:
-            st.markdown("#### Parameters")
-            
-            vmax_lb = st.slider("Vmax (µmol/min)", 10, 200, 100, 5, key="vmax_lb",
-                               help="Maximum reaction velocity")
-            km_lb = st.slider("Km (mM)", 0.5, 20.0, 5.0, 0.5, key="km_lb",
-                             help="Substrate concentration at half Vmax")
-            
-            show_inhibitor_lb = st.checkbox("Add Inhibitor", value=True, key="show_inh_lb")
-            
-            if show_inhibitor_lb:
-                inh_type_lb = st.selectbox(
-                    "Inhibition Type",
-                    ["Competitive", "Non-competitive", "Uncompetitive", "Mixed"],
-                    key="inh_type_lb"
-                )
-                
-                ki_lb = st.slider("Ki (mM)", 0.5, 10.0, 2.0, 0.5, key="ki_lb",
-                                 help="Inhibitor dissociation constant (lower = stronger binding)")
-                inhibitor_conc = st.slider("[I] Inhibitor Concentration (mM)", 
-                                          0.0, 10.0, 3.0, 0.5, key="inh_conc_lb",
-                                          help="Concentration of inhibitor added to reaction")
-            
-            st.markdown("""**Equation:**""")
-            st.latex(r"\frac{1}{v} = \frac{K_m}{V_{max}} \cdot \frac{1}{[S]} + \frac{1}{V_{max}}")
-            
-            st.info("""**Interpretation:**
-- **Y-intercept:** 1/Vmax
-- **X-intercept:** -1/Km
-- **Slope:** Km/Vmax
-            """)
-        
-        with col2:
-            # Generate substrate concentrations
-            substrate_conc = np.array([0.5, 1, 2, 4, 8, 16, 32])  # mM
-            
-            # Calculate velocities (no inhibitor)
-            velocity_no_inh = vmax_lb * substrate_conc / (km_lb + substrate_conc)
-            
-            # Lineweaver-Burk transformation (avoid division by zero)
-            # Filter out any zero values
-            if np.any(substrate_conc == 0) or np.any(velocity_no_inh == 0):
-                st.error("⚠️ Cannot create Lineweaver-Burk plot: division by zero detected")
-            else:
-                reciprocal_s = 1 / substrate_conc
-                reciprocal_v_no_inh = 1 / velocity_no_inh
-                
-                fig = go.Figure()
-                
-                # Plot without inhibitor
-                fig.add_trace(go.Scatter(
-                    x=reciprocal_s, 
-                    y=reciprocal_v_no_inh,
-                    mode='lines+markers',
-                    name='No Inhibitor',
-                    line=dict(color='blue', width=2),
-                    marker=dict(size=8)
-                ))
-                
-                # Add inhibitor conditions
-                if show_inhibitor_lb:
-                    alpha = 1 + (inhibitor_conc / ki_lb)
-                    
-                    if inh_type_lb == "Competitive":
-                        velocity_inh = vmax_lb * substrate_conc / (km_lb * alpha + substrate_conc)
-                    elif inh_type_lb == "Non-competitive":
-                        velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb + substrate_conc)
-                    elif inh_type_lb == "Uncompetitive":
-                        velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb / alpha + substrate_conc)
-                    else:  # Mixed inhibition
-                        alpha_prime = alpha  # For simplicity, assume alpha = alpha'
-                        velocity_inh = vmax_lb * substrate_conc / (alpha * km_lb + alpha_prime * substrate_conc)
-                    
-                    reciprocal_v_inh = 1 / velocity_inh
-                    
-                    fig.add_trace(go.Scatter(
-                        x=reciprocal_s, 
-                        y=reciprocal_v_inh,
-                        mode='lines+markers',
-                        name=f'With {inh_type_lb} Inhibitor',
-                        line=dict(color='red', width=2, dash='dash'),
-                        marker=dict(size=8)
-                    ))
-                
-                fig.update_layout(
-                    title='Lineweaver-Burk Plot',
-                    xaxis_title='1/[S] (1/mM)',
-                    yaxis_title='1/v (min/µmol)',
-                    height=500,
-                    hovermode='closest'
-                )
-                
-                # Add grid
-                fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
-                fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
-                
-                st.plotly_chart(fig, width='stretch')
-                st.caption("*Theoretical simulation based on Michaelis-Menten enzyme kinetics equations (Segel, 1993).*")
-                
-                # Display calculated parameters
-                st.markdown("**Calculated Parameters:**")
-                col_a, col_b = st.columns(2)
-                with col_a:
-                    st.metric("Vmax", f"{vmax_lb} µmol/min")
-                    st.metric("Km", f"{km_lb} mM")
-                with col_b:
-                    st.metric("Vmax/Km (Efficiency)", f"{vmax_lb/km_lb:.2f}")
-                    if show_inhibitor_lb:
-                        st.metric("Ki", f"{ki_lb} mM")
     elif selected_section == "Calculator":
         show_calculator()
     elif selected_section == "References":
