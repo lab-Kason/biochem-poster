@@ -1523,115 +1523,115 @@ def main():
         
         # Main content (no tabs needed)
         st.subheader("Lineweaver-Burk (Double Reciprocal) Plot")
+        
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            st.markdown("#### Parameters")
             
-            col1, col2 = st.columns([1, 2])
+            vmax_lb = st.slider("Vmax (µmol/min)", 10, 200, 100, 5, key="vmax_lb",
+                               help="Maximum reaction velocity")
+            km_lb = st.slider("Km (mM)", 0.5, 20.0, 5.0, 0.5, key="km_lb",
+                             help="Substrate concentration at half Vmax")
             
-            with col1:
-                st.markdown("#### Parameters")
+            show_inhibitor_lb = st.checkbox("Add Inhibitor", value=True, key="show_inh_lb")
+            
+            if show_inhibitor_lb:
+                inh_type_lb = st.selectbox(
+                    "Inhibition Type",
+                    ["Competitive", "Non-competitive", "Uncompetitive"],
+                    key="inh_type_lb"
+                )
                 
-                vmax_lb = st.slider("Vmax (µmol/min)", 10, 200, 100, 5, key="vmax_lb",
-                                   help="Maximum reaction velocity")
-                km_lb = st.slider("Km (mM)", 0.5, 20.0, 5.0, 0.5, key="km_lb",
-                                 help="Substrate concentration at half Vmax")
-                
-                show_inhibitor_lb = st.checkbox("Add Inhibitor", value=True, key="show_inh_lb")
-                
-                if show_inhibitor_lb:
-                    inh_type_lb = st.selectbox(
-                        "Inhibition Type",
-                        ["Competitive", "Non-competitive", "Uncompetitive"],
-                        key="inh_type_lb"
-                    )
-                    
-                    ki_lb = st.slider("Ki (mM)", 0.5, 10.0, 2.0, 0.5, key="ki_lb",
-                                     help="Inhibitor dissociation constant (lower = stronger binding)")
-                    inhibitor_conc = st.slider("[I] Inhibitor Concentration (mM)", 
-                                              0.0, 10.0, 3.0, 0.5, key="inh_conc_lb",
-                                              help="Concentration of inhibitor added to reaction")
-                
-                st.markdown("""**Equation:**""")
-                st.latex(r"\frac{1}{v} = \frac{K_m}{V_{max}} \cdot \frac{1}{[S]} + \frac{1}{V_{max}}")
-                
-                st.info("""**Interpretation:**
+                ki_lb = st.slider("Ki (mM)", 0.5, 10.0, 2.0, 0.5, key="ki_lb",
+                                 help="Inhibitor dissociation constant (lower = stronger binding)")
+                inhibitor_conc = st.slider("[I] Inhibitor Concentration (mM)", 
+                                          0.0, 10.0, 3.0, 0.5, key="inh_conc_lb",
+                                          help="Concentration of inhibitor added to reaction")
+            
+            st.markdown("""**Equation:**""")
+            st.latex(r"\frac{1}{v} = \frac{K_m}{V_{max}} \cdot \frac{1}{[S]} + \frac{1}{V_{max}}")
+            
+            st.info("""**Interpretation:**
 - **Y-intercept:** 1/Vmax
 - **X-intercept:** -1/Km
 - **Slope:** Km/Vmax
-                """)
+            """)
+        
+        with col2:
+            # Generate substrate concentrations
+            substrate_conc = np.array([0.5, 1, 2, 4, 8, 16, 32])  # mM
             
-            with col2:
-                # Generate substrate concentrations
-                substrate_conc = np.array([0.5, 1, 2, 4, 8, 16, 32])  # mM
+            # Calculate velocities (no inhibitor)
+            velocity_no_inh = vmax_lb * substrate_conc / (km_lb + substrate_conc)
+            
+            # Lineweaver-Burk transformation (avoid division by zero)
+            # Filter out any zero values
+            if np.any(substrate_conc == 0) or np.any(velocity_no_inh == 0):
+                st.error("⚠️ Cannot create Lineweaver-Burk plot: division by zero detected")
+            else:
+                reciprocal_s = 1 / substrate_conc
+                reciprocal_v_no_inh = 1 / velocity_no_inh
                 
-                # Calculate velocities (no inhibitor)
-                velocity_no_inh = vmax_lb * substrate_conc / (km_lb + substrate_conc)
+                fig = go.Figure()
                 
-                # Lineweaver-Burk transformation (avoid division by zero)
-                # Filter out any zero values
-                if np.any(substrate_conc == 0) or np.any(velocity_no_inh == 0):
-                    st.error("⚠️ Cannot create Lineweaver-Burk plot: division by zero detected")
-                else:
-                    reciprocal_s = 1 / substrate_conc
-                    reciprocal_v_no_inh = 1 / velocity_no_inh
+                # Plot without inhibitor
+                fig.add_trace(go.Scatter(
+                    x=reciprocal_s, 
+                    y=reciprocal_v_no_inh,
+                    mode='lines+markers',
+                    name='No Inhibitor',
+                    line=dict(color='blue', width=2),
+                    marker=dict(size=8)
+                ))
+                
+                # Add inhibitor conditions
+                if show_inhibitor_lb:
+                    alpha = 1 + (inhibitor_conc / ki_lb)
                     
-                    fig = go.Figure()
+                    if inh_type_lb == "Competitive":
+                        velocity_inh = vmax_lb * substrate_conc / (km_lb * alpha + substrate_conc)
+                    elif inh_type_lb == "Non-competitive":
+                        velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb + substrate_conc)
+                    else:  # Uncompetitive
+                        velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb / alpha + substrate_conc)
                     
-                    # Plot without inhibitor
+                    reciprocal_v_inh = 1 / velocity_inh
+                    
                     fig.add_trace(go.Scatter(
                         x=reciprocal_s, 
-                        y=reciprocal_v_no_inh,
+                        y=reciprocal_v_inh,
                         mode='lines+markers',
-                        name='No Inhibitor',
-                        line=dict(color='blue', width=2),
+                        name=f'With {inh_type_lb} Inhibitor',
+                        line=dict(color='red', width=2, dash='dash'),
                         marker=dict(size=8)
                     ))
-                    
-                    # Add inhibitor conditions
+                
+                fig.update_layout(
+                    title='Lineweaver-Burk Plot',
+                    xaxis_title='1/[S] (1/mM)',
+                    yaxis_title='1/v (min/µmol)',
+                    height=500,
+                    hovermode='closest'
+                )
+                
+                # Add grid
+                fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
+                fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
+                
+                st.plotly_chart(fig, width='stretch')
+                st.caption("*Theoretical simulation based on Michaelis-Menten enzyme kinetics equations (Segel, 1993).*")
+                
+                # Display calculated parameters
+                st.markdown("**Calculated Parameters:**")
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.metric("Vmax", f"{vmax_lb} µmol/min")
+                    st.metric("Km", f"{km_lb} mM")
+                with col_b:
+                    st.metric("Vmax/Km (Efficiency)", f"{vmax_lb/km_lb:.2f}")
                     if show_inhibitor_lb:
-                        alpha = 1 + (inhibitor_conc / ki_lb)
-                        
-                        if inh_type_lb == "Competitive":
-                            velocity_inh = vmax_lb * substrate_conc / (km_lb * alpha + substrate_conc)
-                        elif inh_type_lb == "Non-competitive":
-                            velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb + substrate_conc)
-                        else:  # Uncompetitive
-                            velocity_inh = (vmax_lb / alpha) * substrate_conc / (km_lb / alpha + substrate_conc)
-                        
-                        reciprocal_v_inh = 1 / velocity_inh
-                        
-                        fig.add_trace(go.Scatter(
-                            x=reciprocal_s, 
-                            y=reciprocal_v_inh,
-                            mode='lines+markers',
-                            name=f'With {inh_type_lb} Inhibitor',
-                            line=dict(color='red', width=2, dash='dash'),
-                            marker=dict(size=8)
-                        ))
-                    
-                    fig.update_layout(
-                        title='Lineweaver-Burk Plot',
-                        xaxis_title='1/[S] (1/mM)',
-                        yaxis_title='1/v (min/µmol)',
-                        height=500,
-                        hovermode='closest'
-                    )
-                    
-                    # Add grid
-                    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
-                    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
-                    
-                    st.plotly_chart(fig, width='stretch')
-                    st.caption("*Theoretical simulation based on Michaelis-Menten enzyme kinetics equations (Segel, 1993).*")
-                    
-                    # Display calculated parameters
-                    st.markdown("**Calculated Parameters:**")
-                    col_a, col_b = st.columns(2)
-                    with col_a:
-                        st.metric("Vmax", f"{vmax_lb} µmol/min")
-                        st.metric("Km", f"{km_lb} mM")
-                    with col_b:
-                        st.metric("Vmax/Km (Efficiency)", f"{vmax_lb/km_lb:.2f}")
-                        if show_inhibitor_lb:
-                            st.metric("Ki", f"{ki_lb} mM}")
+                        st.metric("Ki", f"{ki_lb} mM")
     elif selected_section == "Calculator":
         show_calculator()
     elif selected_section == "References":
