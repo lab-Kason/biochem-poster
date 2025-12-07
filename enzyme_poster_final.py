@@ -773,12 +773,13 @@ def show_mechanisms():
             line=dict(color='blue', width=2)
         ))
         
-        # Add data points
+        # Add data points connected by lines
         fig_lb.add_trace(go.Scatter(
             x=reciprocal_s, 
             y=reciprocal_v_no_inh,
-            mode='markers',
+            mode='lines+markers',
             name='Data Points',
+            line=dict(color='blue', width=2),
             marker=dict(size=8, color='blue'),
             showlegend=False
         ))
@@ -833,11 +834,12 @@ def show_mechanisms():
                 line=dict(color=inhibitor_color, width=2, dash='dash')
             ))
             
-            # Add data points
+            # Add data points connected by lines
             fig_lb.add_trace(go.Scatter(
                 x=reciprocal_s, 
                 y=reciprocal_v_inh,
-                mode='markers',
+                mode='lines+markers',
+                line=dict(color=inhibitor_color, width=2, dash='dash'),
                 marker=dict(size=8, color=inhibitor_color),
                 showlegend=False
             ))
