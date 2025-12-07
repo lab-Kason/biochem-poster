@@ -99,15 +99,16 @@ def create_header():
             - Adjustable parameters (Km, Vmax, inhibitor strength)
             - *Best for: Learning how inhibitors work*
             
-            **3. 📚 Case Studies**
-            - 5 blockbuster drugs (Statins, HIV protease, ACE, Kinase, COX-2)
-            - Clinical trial data with interactive charts
-            - *Best for: Real-world applications*
+            **3. 📚 Drug Development Case Studies**
+            - 5 blockbuster enzyme inhibitor drugs: Discovery to market
+            - Development timelines, clinical trials, and FDA approval stories
+            - Market impact and patient outcomes data
+            - *Best for: Understanding complete drug development process*
             
             **4. 📊 Lineweaver-Burk Plot**
-            - Linear transformation for Km and Vmax determination
-            - Compare different inhibition types
-            - *Best for: Identifying inhibition mechanisms from data*
+            - Linear transformation for Km and Vmax determination in drug screening
+            - Compare different inhibition types to guide drug design
+            - *Best for: Identifying inhibition mechanisms in drug candidates*
             
             **5. 🧮 Calculator**
             - IC50 calculator (with CSV export)
@@ -177,18 +178,30 @@ def show_overview():
     with col1:
         st.markdown("""
         <div class="info-card">
-        <h3>🚀 Why Enzyme Inhibitors Matter</h3>
-        Enzyme inhibitors represent one of the most successful strategies in modern drug development, 
-        targeting specific enzymes involved in disease pathways with remarkable precision and efficacy.
+        <h3>🚀 Enzyme Inhibitors in Drug Development</h3>
+        Enzyme inhibitors represent one of the most successful strategies in pharmaceutical drug development, 
+        targeting specific enzymes involved in disease pathways with remarkable precision and efficacy. 
+        Understanding enzyme inhibition principles is fundamental to modern drug discovery and design.
         </div>
         """, unsafe_allow_html=True)
         
         st.write("""
-        ### Key Advantages:
-        - **High Specificity**: Target only disease-related enzymes
-        - **Predictable Kinetics**: Well-understood mechanisms
-        - **Proven Success**: Multiple blockbuster drugs
-        - **Versatile Applications**: Cancer, infections, metabolic diseases
+        ### Why This Approach Succeeds in Drug Development:
+        - **High Specificity**: Design drugs targeting only disease-related enzymes
+        - **Predictable Kinetics**: Apply well-understood mechanisms to drug optimization
+        - **Proven Track Record**: Multiple blockbuster drugs (see Case Studies)
+        - **Rational Design**: Structure-based approaches enable targeted development
+        - **Clinical Success**: From aspirin to modern cancer therapies
+        """)
+        
+        st.markdown("### 💊 Drug Development Reality:")
+        st.info("""
+        **Development Timeline & Success Rates** (DiMasi et al., 2016):
+        - ⏱️ **Average time:** 10-15 years from discovery to approval
+        - 💰 **Average cost:** $2.6 billion per approved drug
+        - 📊 **Success rate:** Only 12% of drug candidates reach market
+        - 🎯 **Enzyme targets:** ~47% of all FDA-approved drugs target enzymes
+        - 💵 **Market value:** $180+ billion annually for enzyme inhibitors
         """)
     
     with col2:
@@ -206,6 +219,84 @@ def show_overview():
         st.caption("""*Data sources: FDA Drug Approvals Database (2024); ClinicalTrials.gov; 
         Evaluate Pharma Market Reports (2023). Success rate from DiMasi et al. (2016). 
         See References section for full citations.*""")
+    
+    # Drug Development Pipeline
+    st.markdown("---")
+    st.markdown("### 🔬 Drug Development Pipeline: From Enzyme Target to FDA Approval")
+    
+    st.write("""This application demonstrates key stages in enzyme inhibitor drug development:""")
+    
+    # Create pipeline visualization
+    pipeline_data = pd.DataFrame({
+        'Stage': ['1. Target\nIdentification', '2. Lead\nDiscovery', '3. Lead\nOptimization', 
+                  '4. Preclinical\nTesting', '5. Clinical\nTrials', '6. FDA\nApproval', '7. Post-Market\nMonitoring'],
+        'Duration': ['1-2 years', '2-3 years', '2-3 years', '1-2 years', '6-7 years', '1-2 years', 'Ongoing'],
+        'Success_Rate': [100, 80, 60, 40, 20, 12, 12],
+        'Description': [
+            'Identify enzyme involved in disease',
+            'Screen compounds for inhibition activity',
+            'Improve IC50, Ki, selectivity, ADME properties',
+            'Animal testing for safety and efficacy',
+            'Phase I (safety), II (efficacy), III (large-scale)',
+            'Regulatory review and approval',
+            'Phase IV studies, adverse event monitoring'
+        ]
+    })
+    
+    col_a, col_b = st.columns([2, 1])
+    
+    with col_a:
+        # Pipeline flowchart
+        fig_pipeline = go.Figure()
+        
+        colors = ['#2E86AB', '#3FA7D6', '#59C3C3', '#74D3AE', '#92E5A1', '#A8E6A1', '#C6EBBE']
+        
+        for i, row in pipeline_data.iterrows():
+            fig_pipeline.add_trace(go.Bar(
+                y=[row['Stage']],
+                x=[1],
+                orientation='h',
+                name=row['Stage'],
+                text=f"<b>{row['Stage']}</b><br>{row['Duration']}",
+                textposition='inside',
+                marker=dict(color=colors[i]),
+                hovertext=f"{row['Description']}<br>Duration: {row['Duration']}<br>Success Rate: {row['Success_Rate']}%",
+                hoverinfo='text',
+                showlegend=False
+            ))
+        
+        fig_pipeline.update_layout(
+            title='Enzyme Inhibitor Drug Development Stages',
+            xaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
+            yaxis=dict(showgrid=False, autorange='reversed'),
+            height=400,
+            margin=dict(l=10, r=10, t=40, b=10),
+            plot_bgcolor='white'
+        )
+        
+        st.plotly_chart(fig_pipeline, use_container_width=True)
+    
+    with col_b:
+        st.markdown("**Key Milestones:**")
+        st.markdown("""
+        **Stage 1-2:** Enzyme target identification and screening
+        - Example: HMG-CoA reductase for cholesterol (Statins)
+        - See: **Mechanisms** section
+        
+        **Stage 3:** Optimize IC50/Ki values
+        - Example: Atorvastatin optimization from compactin
+        - See: **Calculator** section (IC50/Ki tools)
+        
+        **Stage 4-5:** Clinical validation
+        - Example: Heart Protection Study (Statins)
+        - See: **Case Studies** section
+        
+        **Stage 6:** Lineweaver-Burk analysis confirms mechanism
+        - See: **Lineweaver-Burk** section
+        """)
+        
+        st.info("""**This app covers:** Stages 1-3 (mechanism understanding, kinetic analysis, potency optimization) 
+        and demonstrates successful Stage 6-7 examples through case studies.""")
 
 # Interactive Mechanisms Section
 def show_mechanisms():
@@ -1155,17 +1246,38 @@ def show_case_studies():
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown("""**How It Works:**
+            st.markdown("""### 🔬 Drug Development Story
+            
+**Discovery Timeline** (Endo, 2010; Istvan & Deisenhofer, 2001):
+- **1971:** Akira Endo discovers compactin from fungus *Penicillium citrinum* 
+- **1976:** Compactin shown to inhibit HMG-CoA reductase
+- **1980s:** Structure-based drug design begins after enzyme crystal structure solved
+- **1987:** Lovastatin (first statin) FDA approved
+- **1996:** Atorvastatin (Lipitor) approved - optimized for potency
+- **2002:** Heart Protection Study validates cardiovascular benefits
+
+**Development Approach:**
+- **Natural product screening** → Led to compactin discovery (Endo, 2010)
+- **Structure-based optimization** → Improved IC50 and selectivity (Istvan & Deisenhofer, 2001)
+- **Competitive inhibition design** → Mimics natural substrate HMG-CoA
+- **Clinical validation** → Large-scale trials with 20,536+ patients (Heart Protection Study, 2002)
+
+---
+
+**How It Works:**
 Statins competitively inhibit HMG-CoA reductase, the rate-limiting enzyme in cholesterol 
 biosynthesis. By binding to the active site, they prevent the conversion of HMG-CoA to 
-mevalonate, thereby reducing cholesterol production in the liver.
+mevalonate, thereby reducing cholesterol production in the liver (Istvan & Deisenhofer, 2001).
 
 **Clinical Impact:**
-- Reduces LDL cholesterol by 39-60%
-- Decreases cardiovascular events by 25-35%
+- Reduces LDL cholesterol by 39-60% (Heart Protection Study, 2002)
+- Decreases cardiovascular events by 25-35% (Ridker et al., 2008)
 - Prevents ~10,000 deaths annually in the US alone
+- Peak sales: $12.9 billion/year (best-selling drug in history)
 
-**Key Studies:** Heart Protection Study (2002), JUPITER Trial (2008)
+**Key Clinical Trials:** 
+- Heart Protection Study (2002) - 20,536 patients
+- JUPITER Trial (Ridker et al., 2008) - C-reactive protein prevention
             """)
         
         with col2:
@@ -1210,18 +1322,41 @@ mevalonate, thereby reducing cholesterol production in the liver.
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown("""**How It Works:**
+            st.markdown("""### 🔬 Drug Development Story
+
+**Discovery Timeline** (Kohl et al., 1988; Wlodawer & Vondrasek, 1998; Flexner, 1998):
+- **1988:** HIV protease identified as essential for viral infectivity (Kohl et al., 1988)
+- **1989:** X-ray crystal structure of HIV protease solved
+- **1990-1995:** Structure-based drug design era begins (Wlodawer & Vondrasek, 1998)
+- **1995:** Saquinavir - first protease inhibitor FDA approved
+- **1996:** Ritonavir and Indinavir approved - HAART era begins
+- **1998:** Declining morbidity and mortality observed (Palella et al., 1998)
+
+**Development Approach:**
+- **Rational design** → Used X-ray crystallography of enzyme-inhibitor complexes (Wlodawer & Vondrasek, 1998)
+- **Transition-state mimicry** → Designed to resemble peptide cleavage intermediate
+- **Structure-activity optimization** → Improved IC50 from μM to nM range (Flexner, 1998)
+- **Combination therapy** → HAART protocol with multiple antiretrovirals (Gulick et al., 1997)
+
+**Major Success of Structure-Assisted Drug Design** (Wlodawer & Vondrasek, 1998)
+
+---
+
+**How It Works:**
 HIV protease inhibitors mimic the transition state of the natural peptide substrate, 
 binding tightly to the enzyme's active site. They prevent the cleavage of viral 
-polyproteins, blocking the maturation of infectious viral particles.
+polyproteins, blocking the maturation of infectious viral particles (Kohl et al., 1988).
 
 **Clinical Impact:**
-- Reduces viral load by >90% when combined with other antiretrovirals
-- Increased life expectancy from ~1 year to near-normal
-- Death rate decreased by 80% after introduction (1996-1998)
+- Reduces viral load by >90% when combined with other antiretrovirals (Gulick et al., 1997)
+- Increased life expectancy from ~1 year to near-normal (Palella et al., 1998)
+- Death rate decreased by 80% after introduction (1996-1998) (Palella et al., 1998)
 - Part of HAART (Highly Active Antiretroviral Therapy)
+- Transformed HIV from death sentence to manageable chronic disease
 
-**Design Success:** Structure-based drug design using X-ray crystallography
+**Key Clinical Trials:**
+- Gulick et al. (1997) - Indinavir + zidovudine + lamivudine combination
+- Palella et al. (1998) - Documented declining mortality with protease inhibitors
             """)
         
         with col2:
@@ -1269,18 +1404,44 @@ polyproteins, blocking the maturation of infectious viral particles.
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown("""**How It Works:**
+            st.markdown("""### 🔬 Drug Development Story
+
+**Discovery Timeline** (Cushman & Ondetti, 1991; Pfeffer et al., 1992; Yusuf et al., 2000):
+- **1965:** Discovery that snake venom (*Bothrops jararaca*) contains ACE inhibitors
+- **1970s:** Synthetic peptide analogs developed (Cushman & Ondetti, 1991)
+- **1977:** Captopril designed with zinc-binding thiol group
+- **1981:** Captopril FDA approved - first ACE inhibitor drug
+- **1985:** Enalapril approved - improved pharmacokinetics
+- **1992:** SAVE Trial demonstrates mortality benefit (Pfeffer et al., 1992)
+- **2000:** HOPE Study expands indications (Yusuf et al., 2000)
+
+**Development Approach:**
+- **Nature-inspired design** → Snake venom peptides as lead compounds (Cushman & Ondetti, 1991)
+- **Rational drug design** → Designed zinc-binding group for active site
+- **Structure optimization** → Removed peptide bonds for oral bioavailability
+- **Clinical validation** → Multiple large-scale cardiovascular outcomes trials
+
+**Bio-inspired Drug Design Success Story**
+
+---
+
+**How It Works:**
 ACE inhibitors block the conversion of angiotensin I to angiotensin II, a potent 
 vasoconstrictor. They contain a zinc-binding group that coordinates with the zinc ion 
-in the ACE active site, preventing substrate binding.
+in the ACE active site, preventing substrate binding (Cushman & Ondetti, 1991).
 
 **Clinical Impact:**
 - Reduces blood pressure by 10-15 mmHg (systolic)
-- Decreases heart failure mortality by 20-30%
+- Decreases heart failure mortality by 20-30% (Pfeffer et al., 1992)
+- Reduces cardiovascular events in high-risk patients (Yusuf et al., 2000)
 - Protects kidney function in diabetic patients
-- Used by >40 million Americans annually
+- Used by >40 million Americans annually - one of most prescribed drug classes
 
-**Design Inspiration:** Based on snake venom peptides (Bothrops jararaca)
+**Key Clinical Trials:**
+- SAVE Trial (Pfeffer et al., 1992) - Post-MI survival benefit
+- HOPE Study (Yusuf et al., 2000) - High-risk patient cardiovascular protection
+
+**Design Inspiration:** Based on snake venom peptides from *Bothrops jararaca*
             """)
         
         with col2:
@@ -1330,16 +1491,43 @@ in the ACE active site, preventing substrate binding.
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown("""**How It Works:**
+            st.markdown("""### 🔬 Drug Development Story
+
+**Discovery Timeline** (Druker et al., 2001; Cohen, 2002; Deininger et al., 2005):
+- **1990s:** BCR-ABL fusion protein identified as CML driver
+- **1992-1996:** Screening for tyrosine kinase inhibitors by Novartis (Deininger et al., 2005)
+- **1996:** Imatinib (STI571/Gleevec) identified as selective BCR-ABL inhibitor
+- **1998:** Phase I clinical trials begin (Druker et al., 2001)
+- **2001:** FDA approval - remarkably fast (2.5 months review time)
+- **2002:** Recognized as major drug target category (Cohen, 2002)
+- **2017:** Long-term follow-up confirms sustained efficacy (Hochhaus et al., 2017)
+
+**Development Approach:**
+- **Targeted molecular therapy** → Designed for specific oncogenic kinase (Druker et al., 2001)
+- **ATP-competitive inhibition** → Binds to ATP-binding pocket
+- **Rational drug design** → Structure-based optimization for selectivity (Deininger et al., 2005)
+- **Rapid clinical development** → Dramatic phase I results accelerated approval
+- **Paradigm shift** → Demonstrated that targeted therapy could cure cancer (Cohen, 2002)
+
+**First Major Success of Precision Medicine in Oncology**
+
+---
+
+**How It Works:**
 Kinase inhibitors compete with ATP for the enzyme's binding site, preventing 
 phosphorylation of target proteins. This blocks signaling pathways that drive 
-cancer cell proliferation and survival.
+cancer cell proliferation and survival (Druker et al., 2001).
 
 **Clinical Impact - Imatinib for CML:**
-- 10-year survival rate: 83% (vs. 20% before 2001)
-- Complete cytogenetic response: 87% of patients
-- Transformed CML from terminal to chronic condition
-- Led to development of 50+ kinase inhibitor drugs
+- 10-year survival rate: 83% vs. 20% before 2001 (Hochhaus et al., 2017)
+- Complete cytogenetic response: 87% of patients (Druker et al., 2001)
+- Transformed CML from terminal (median survival 3-5 years) to chronic condition
+- Led to development of 50+ kinase inhibitor drugs (Cohen, 2002)
+- Established kinases as \"major drug targets of the twenty-first century\" (Cohen, 2002)
+
+**Key Clinical Trials:**
+- Druker et al. (2001) - Phase I/II trials demonstrating efficacy and safety
+- Hochhaus et al. (2017) - 10-year follow-up confirming long-term survival benefit
 
 **Precision Medicine:** First major success of targeted molecular therapy
             """)
@@ -1389,20 +1577,46 @@ cancer cell proliferation and survival.
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown("""**How It Works:**
+            st.markdown("""### 🔬 Drug Development Story
+
+**Discovery Timeline** (Vane & Botting, 1998; Bombardier et al., 2000; FitzGerald, 2004):
+- **1991:** COX-2 enzyme discovered and cloned
+- **1994:** Recognition that COX-2 selectivity could reduce GI side effects (Vane & Botting, 1998)
+- **1995-1998:** Structure-based design of selective COX-2 inhibitors
+- **1998:** Celecoxib (Celebrex) FDA approved - first COX-2 selective inhibitor
+- **1999:** Rofecoxib (Vioxx) approved
+- **2000:** VIGOR and CLASS trials demonstrate GI safety (Bombardier et al., 2000; Silverstein et al., 2000)
+- **2004:** Rofecoxib withdrawn due to cardiovascular risks (FitzGerald, 2004)
+
+**Development Approach:**
+- **Enzyme isoform selectivity** → Designed to spare COX-1 (Vane & Botting, 1998)
+- **Structure-based drug design** → Targeted COX-2 active site differences
+- **Clinical validation** → Large-scale GI safety trials (CLASS, VIGOR)
+- **Post-market surveillance** → Identified cardiovascular safety concerns (FitzGerald, 2004)
+
+**Example of Both Success and Challenges in Drug Development**
+
+---
+
+**How It Works:**
 COX-2 inhibitors selectively block cyclooxygenase-2, the enzyme induced during 
 inflammation, while sparing COX-1 (important for stomach protection). This provides 
-pain relief with reduced gastrointestinal side effects.
+pain relief with reduced gastrointestinal side effects (Vane & Botting, 1998).
 
 **Clinical Impact:**
 - Similar pain relief to traditional NSAIDs
-- 50-60% reduction in serious GI complications
-- Reduced gastric ulcers: 0.4% vs. 1.4% (traditional NSAIDs)
+- 50-60% reduction in serious GI complications (Bombardier et al., 2000; Silverstein et al., 2000)
+- Reduced gastric ulcers: 0.4% vs. 1.4% with traditional NSAIDs (Silverstein et al., 2000)
 - Used by millions for arthritis management
 
 **Selectivity:** COX-2/COX-1 selectivity ratio >100:1
 
-**Note:** Rofecoxib withdrawn in 2004 due to cardiovascular risks
+**Key Clinical Trials:**
+- CLASS Study (Silverstein et al., 2000) - GI toxicity comparison
+- VIGOR Trial (Bombardier et al., 2000) - Safety and efficacy in rheumatoid arthritis
+
+**Important Lesson:** Rofecoxib withdrawn in 2004 due to cardiovascular risks (FitzGerald, 2004), 
+demonstrating importance of long-term safety monitoring even after FDA approval.
             """)
         
         with col2:
