@@ -202,7 +202,7 @@ def show_overview():
         # Quick stats
         stats_data = {
             'Category': ['Approved Drugs', 'Clinical Trials', 'Market Value', 'Success Rate'],
-            'Value': ['250+', '800+', '$150B+', '15%']
+            'Value': ['250+', '800+', '$150B+', '12%']
         }
         df_stats = pd.DataFrame(stats_data)
         fig = px.bar(df_stats, x='Value', y='Category', orientation='h',
@@ -1491,7 +1491,7 @@ def show_references():
         ---
         
         **Tab 1: Key Papers** 📄
-        - **26+ peer-reviewed publications** from top journals
+        - **31 peer-reviewed publications** from top journals
         - All citations in **APA 7th edition format**
         - **DOI links** for direct access to papers
         - Organized by topic:
@@ -1552,35 +1552,43 @@ def show_references():
 
 2. Cheng, Y., & Prusoff, W. H. (1973). Relationship between the inhibition constant (K1) and the concentration of inhibitor which causes 50 per cent inhibition (I50) of an enzymatic reaction. *Biochemical Pharmacology*, *22*(23), 3099–3108. https://doi.org/10.1016/0006-2952(73)90196-2
 
-3. Segel, I. H. (1993). *Enzyme kinetics: Behavior and analysis of rapid equilibrium and steady-state enzyme systems*. Wiley-Interscience.
+3. DiMasi, J. A., Grabowski, H. G., & Hansen, R. W. (2016). Innovation in the pharmaceutical industry: New estimates of R&D costs. *Journal of Health Economics*, *47*, 20–33. https://doi.org/10.1016/j.jhealeco.2016.01.012
 
-4. Cornish-Bowden, A. (2012). *Fundamentals of enzyme kinetics* (4th ed.). Wiley-Blackwell.
+#### Drug Development Resources
 
-5. Morrison, J. F., & Walsh, C. T. (1988). The behavior and significance of slow-binding enzyme inhibitors. *Advances in Enzymology and Related Areas of Molecular Biology*, *61*, 201–301.
+4. U.S. Food and Drug Administration. (2024). *Drugs@FDA: FDA-approved drugs*. https://www.accessdata.fda.gov/scripts/cder/daf/
 
-6. DiMasi, J. A., Grabowski, H. G., & Hansen, R. W. (2016). Innovation in the pharmaceutical industry: New estimates of R&D costs. *Journal of Health Economics*, *47*, 20–33. https://doi.org/10.1016/j.jhealeco.2016.01.012
+5. U.S. National Library of Medicine. (n.d.). *ClinicalTrials.gov*. https://clinicaltrials.gov/
+
+6. EvaluatePharma. (2023). *World preview 2023, outlook to 2028*. Evaluate Ltd.
+
+7. Centers for Disease Control and Prevention. (n.d.). *CDC WONDER: Wide-ranging online data for epidemiologic research*. https://wonder.cdc.gov/
 
 #### Statins (HMG-CoA Reductase Inhibitors)
 
-7. Istvan, E. S., & Deisenhofer, J. (2001). Structural mechanism for statin inhibition of HMG-CoA reductase. *Science*, *292*(5519), 1160–1164. https://doi.org/10.1126/science.1059344
+8. Istvan, E. S., & Deisenhofer, J. (2001). Structural mechanism for statin inhibition of HMG-CoA reductase. *Science*, *292*(5519), 1160–1164. https://doi.org/10.1126/science.1059344
 
-8. Endo, A. (2010). A historical perspective on the discovery of statins. *Proceedings of the Japan Academy, Series B*, *86*(5), 484–493. https://doi.org/10.2183/pjab.86.484
+9. Endo, A. (2010). A historical perspective on the discovery of statins. *Proceedings of the Japan Academy, Series B*, *86*(5), 484–493. https://doi.org/10.2183/pjab.86.484
 
-9. Heart Protection Study Collaborative Group. (2002). MRC/BHF Heart Protection Study of cholesterol lowering with simvastatin in 20,536 high-risk individuals: A randomised placebo-controlled trial. *The Lancet*, *360*(9326), 7–22. https://doi.org/10.1016/S0140-6736(02)09327-3
+10. Heart Protection Study Collaborative Group. (2002). MRC/BHF Heart Protection Study of cholesterol lowering with simvastatin in 20,536 high-risk individuals: A randomised placebo-controlled trial. *The Lancet*, *360*(9326), 7–22. https://doi.org/10.1016/S0140-6736(02)09327-3
 
-10. Ridker, P. M., Danielson, E., Fonseca, F. A., Genest, J., Gotto, A. M., Jr., Kastelein, J. J., Koenig, W., Libby, P., Lorenzatti, A. J., MacFadyen, J. G., Nordestgaard, B. G., Shepherd, J., Willerson, J. T., & Glynn, R. J. (2008). Rosuvastatin to prevent vascular events in men and women with elevated C-reactive protein. *New England Journal of Medicine*, *359*(21), 2195–2207. https://doi.org/10.1056/NEJMoa0807646
+11. Ridker, P. M., Danielson, E., Fonseca, F. A., Genest, J., Gotto, A. M., Jr., Kastelein, J. J., Koenig, W., Libby, P., Lorenzatti, A. J., MacFadyen, J. G., Nordestgaard, B. G., Shepherd, J., Willerson, J. T., & Glynn, R. J. (2008). Rosuvastatin to prevent vascular events in men and women with elevated C-reactive protein. *New England Journal of Medicine*, *359*(21), 2195–2207. https://doi.org/10.1056/NEJMoa0807646
 
 #### HIV Protease Inhibitors
 
-11. Palella, F. J., Jr., Delaney, K. M., Moorman, A. C., Loveless, M. O., Fuhrer, J., Satten, G. A., Aschman, D. J., & Holmberg, S. D. (1998). Declining morbidity and mortality among patients with advanced human immunodeficiency virus infection. *New England Journal of Medicine*, *338*(13), 853–860. https://doi.org/10.1056/NEJM199803263381301
+12. Palella, F. J., Jr., Delaney, K. M., Moorman, A. C., Loveless, M. O., Fuhrer, J., Satten, G. A., Aschman, D. J., & Holmberg, S. D. (1998). Declining morbidity and mortality among patients with advanced human immunodeficiency virus infection. *New England Journal of Medicine*, *338*(13), 853–860. https://doi.org/10.1056/NEJM199803263381301
 
-12. Kohl, N. E., Emini, E. A., Schleif, W. A., Davis, L. J., Heimbach, J. C., Dixon, R. A., Scolnick, E. M., & Sigal, I. S. (1988). Active human immunodeficiency virus protease is required for viral infectivity. *Proceedings of the National Academy of Sciences*, *85*(13), 4686–4690. https://doi.org/10.1073/pnas.85.13.4686
+13. Kohl, N. E., Emini, E. A., Schleif, W. A., Davis, L. J., Heimbach, J. C., Dixon, R. A., Scolnick, E. M., & Sigal, I. S. (1988). Active human immunodeficiency virus protease is required for viral infectivity. *Proceedings of the National Academy of Sciences*, *85*(13), 4686–4690. https://doi.org/10.1073/pnas.85.13.4686
 
-13. Wlodawer, A., & Vondrasek, J. (1998). Inhibitors of HIV-1 protease: A major success of structure-assisted drug design. *Annual Review of Biophysics and Biomolecular Structure*, *27*, 249–284. https://doi.org/10.1146/annurev.biophys.27.1.249
+14. Wlodawer, A., & Vondrasek, J. (1998). Inhibitors of HIV-1 protease: A major success of structure-assisted drug design. *Annual Review of Biophysics and Biomolecular Structure*, *27*, 249–284. https://doi.org/10.1146/annurev.biophys.27.1.249
 
-14. Gulick, R. M., Mellors, J. W., Havlir, D., Eron, J. J., Gonzalez, C., McMahon, D., Richman, D. D., Valentine, F. T., Jonas, L., Meibohm, A., Emini, E. A., & Chodakewitz, J. A. (1997). Treatment with indinavir, zidovudine, and lamivudine in adults with human immunodeficiency virus infection and prior antiretroviral therapy. *New England Journal of Medicine*, *337*(11), 734–739. https://doi.org/10.1056/NEJM199709113371102
+15. Gulick, R. M., Mellors, J. W., Havlir, D., Eron, J. J., Gonzalez, C., McMahon, D., Richman, D. D., Valentine, F. T., Jonas, L., Meibohm, A., Emini, E. A., & Chodakewitz, J. A. (1997). Treatment with indinavir, zidovudine, and lamivudine in adults with human immunodeficiency virus infection and prior antiretroviral therapy. *New England Journal of Medicine*, *337*(11), 734–739. https://doi.org/10.1056/NEJM199709113371102
 
-15. Flexner, C. (1998). HIV-protease inhibitors. *New England Journal of Medicine*, *338*(18), 1281–1293. https://doi.org/10.1056/NEJM199804303381808
+16. Flexner, C. (1998). HIV-protease inhibitors. *New England Journal of Medicine*, *338*(18), 1281–1293. https://doi.org/10.1056/NEJM199804303381808
+
+17. Antiretroviral Therapy Cohort Collaboration. (2008). Life expectancy of individuals on combination antiretroviral therapy in high-income countries: A collaborative analysis of 14 cohort studies. *The Lancet*, *372*(9635), 293–299. https://doi.org/10.1016/S0140-6736(08)61113-7
+
+18. UNAIDS. (2020). *Global AIDS update 2020: Seizing the moment*. Joint United Nations Programme on HIV/AIDS. https://www.unaids.org/en/resources/documents/2020/global-aids-report
 
 #### ACE Inhibitors
 
