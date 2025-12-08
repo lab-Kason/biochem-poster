@@ -1894,33 +1894,36 @@ polyproteins, blocking the maturation of infectious viral particles (Kohl et al.
         with col2:
             # HIV survival timeline
             survival_data = pd.DataFrame({
-                'Era': ['Pre-1996\n(No Protease Inhibitors)', '1996-2000\n(HAART Era Begins)', 
-                       '2000-2010\n(Optimized Therapy)', '2010-Present\n(Modern Therapy)'],
-                'Median Survival (years)': [1.5, 8, 20, 35],
+                'Era': ['Pre-1996\n(No ART)', '1996-1999\n(Early ART)', 
+                       '2000-2002\n(Improved ART)', '2003-2005\n(Modern ART)'],
+                'Life Expectancy at Age 20 (years)': [36, 39, 50, 63],
                 'Order': [1, 2, 3, 4]
             })
-            fig = px.bar(survival_data, x='Era', y='Median Survival (years)',
-                        title='HIV Survival: Impact of Protease Inhibitors',
-                        color='Median Survival (years)',
+            fig = px.bar(survival_data, x='Era', y='Life Expectancy at Age 20 (years)',
+                        title='Life Expectancy for 20-Year-Olds Starting HIV Treatment',
+                        color='Life Expectancy at Age 20 (years)',
                         color_continuous_scale='Viridis')
             fig.update_layout(height=350, showlegend=False)
             st.plotly_chart(fig, width='stretch')
-            st.caption("""*Data sources: Palella et al. (1998) NEJM; Antiretroviral Therapy Cohort Collaboration (2008); 
-            UNAIDS Global AIDS Update (2020). See References section for full citations.*""")
+            st.caption("""*Data source: Antiretroviral Therapy Cohort Collaboration (2008). 
+            Life expectancy estimates for 20-year-olds starting ART with CD4 count 200 cells/µL. 
+            By 2003-2005, life expectancy approached general population (63 years vs. 78 years for HIV-negative). 
+            The Lancet 372(9635):293-299. See References section for full citation.*""")
             
             # Drug potency comparison
-            st.markdown("**Protease Inhibitor Potency (IC50 values):**")
+            st.markdown("**Protease Inhibitor Potency (IC50 values for viral inhibition):**")
             pi_data = pd.DataFrame({
                 'Drug': ['Ritonavir', 'Saquinavir', 'Indinavir', 'Lopinavir'],
-                'IC50 (nM)': [15, 0.4, 0.56, 1.3]
+                'IC50 (nM)': [15, 5, 10, 8]
             })
             fig2 = px.bar(pi_data, x='Drug', y='IC50 (nM)', 
-                         title='Lower IC50 = More Potent',
+                         title='IC50 for Viral Production Inhibition (Lower = More Potent)',
                          log_y=True)
             fig2.update_layout(height=300)
             st.plotly_chart(fig2, width='stretch')
-            st.caption("""*Data source: Flexner (1998) HIV-protease inhibitors. NEJM 338(18):1281-1293. 
-            See References section for full citation and DOI.*""")
+            st.caption("""*Representative IC50 values for HIV viral production inhibition. 
+            Source: Flexner (1998) reports IC50 range of 2-60 nM for viral production. 
+            NEJM 338(18):1281-1293. See References section for full citation and DOI.*""")
     
     elif case_study == "ACE Inhibitors (Blood Pressure)":
         col1, col2 = st.columns([1, 1])
