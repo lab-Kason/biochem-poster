@@ -1574,49 +1574,51 @@ def show_references():
 
 11. Ridker, P. M., Danielson, E., Fonseca, F. A., Genest, J., Gotto, A. M., Jr., Kastelein, J. J., Koenig, W., Libby, P., Lorenzatti, A. J., MacFadyen, J. G., Nordestgaard, B. G., Shepherd, J., Willerson, J. T., & Glynn, R. J. (2008). Rosuvastatin to prevent vascular events in men and women with elevated C-reactive protein. *New England Journal of Medicine*, *359*(21), 2195–2207. https://doi.org/10.1056/NEJMoa0807646
 
+12. Sawyer, A. M., & Flagg, L. A. (2021). *Trends in heart disease and stroke mortality among adults aged 45 and over: United States, 2000–2019* (NCHS Data Brief No. 425). National Center for Health Statistics. https://doi.org/10.15620/cdc:112339
+
 #### HIV Protease Inhibitors
 
-12. Palella, F. J., Jr., Delaney, K. M., Moorman, A. C., Loveless, M. O., Fuhrer, J., Satten, G. A., Aschman, D. J., & Holmberg, S. D. (1998). Declining morbidity and mortality among patients with advanced human immunodeficiency virus infection. *New England Journal of Medicine*, *338*(13), 853–860. https://doi.org/10.1056/NEJM199803263381301
+13. Palella, F. J., Jr., Delaney, K. M., Moorman, A. C., Loveless, M. O., Fuhrer, J., Satten, G. A., Aschman, D. J., & Holmberg, S. D. (1998). Declining morbidity and mortality among patients with advanced human immunodeficiency virus infection. *New England Journal of Medicine*, *338*(13), 853–860. https://doi.org/10.1056/NEJM199803263381301
 
-13. Kohl, N. E., Emini, E. A., Schleif, W. A., Davis, L. J., Heimbach, J. C., Dixon, R. A., Scolnick, E. M., & Sigal, I. S. (1988). Active human immunodeficiency virus protease is required for viral infectivity. *Proceedings of the National Academy of Sciences*, *85*(13), 4686–4690. https://doi.org/10.1073/pnas.85.13.4686
+14. Kohl, N. E., Emini, E. A., Schleif, W. A., Davis, L. J., Heimbach, J. C., Dixon, R. A., Scolnick, E. M., & Sigal, I. S. (1988). Active human immunodeficiency virus protease is required for viral infectivity. *Proceedings of the National Academy of Sciences*, *85*(13), 4686–4690. https://doi.org/10.1073/pnas.85.13.4686
 
-14. Wlodawer, A., & Vondrasek, J. (1998). Inhibitors of HIV-1 protease: A major success of structure-assisted drug design. *Annual Review of Biophysics and Biomolecular Structure*, *27*, 249–284. https://doi.org/10.1146/annurev.biophys.27.1.249
+15. Wlodawer, A., & Vondrasek, J. (1998). Inhibitors of HIV-1 protease: A major success of structure-assisted drug design. *Annual Review of Biophysics and Biomolecular Structure*, *27*, 249–284. https://doi.org/10.1146/annurev.biophys.27.1.249
 
-15. Gulick, R. M., Mellors, J. W., Havlir, D., Eron, J. J., Gonzalez, C., McMahon, D., Richman, D. D., Valentine, F. T., Jonas, L., Meibohm, A., Emini, E. A., & Chodakewitz, J. A. (1997). Treatment with indinavir, zidovudine, and lamivudine in adults with human immunodeficiency virus infection and prior antiretroviral therapy. *New England Journal of Medicine*, *337*(11), 734–739. https://doi.org/10.1056/NEJM199709113371102
+16. Gulick, R. M., Mellors, J. W., Havlir, D., Eron, J. J., Gonzalez, C., McMahon, D., Richman, D. D., Valentine, F. T., Jonas, L., Meibohm, A., Emini, E. A., & Chodakewitz, J. A. (1997). Treatment with indinavir, zidovudine, and lamivudine in adults with human immunodeficiency virus infection and prior antiretroviral therapy. *New England Journal of Medicine*, *337*(11), 734–739. https://doi.org/10.1056/NEJM199709113371102
 
-16. Flexner, C. (1998). HIV-protease inhibitors. *New England Journal of Medicine*, *338*(18), 1281–1293. https://doi.org/10.1056/NEJM199804303381808
+17. Flexner, C. (1998). HIV-protease inhibitors. *New England Journal of Medicine*, *338*(18), 1281–1293. https://doi.org/10.1056/NEJM199804303381808
 
-17. Antiretroviral Therapy Cohort Collaboration. (2008). Life expectancy of individuals on combination antiretroviral therapy in high-income countries: A collaborative analysis of 14 cohort studies. *The Lancet*, *372*(9635), 293–299. https://doi.org/10.1016/S0140-6736(08)61113-7
+18. Antiretroviral Therapy Cohort Collaboration. (2008). Life expectancy of individuals on combination antiretroviral therapy in high-income countries: A collaborative analysis of 14 cohort studies. *The Lancet*, *372*(9635), 293–299. https://doi.org/10.1016/S0140-6736(08)61113-7
 
-18. UNAIDS. (2020). *Global AIDS update 2020: Seizing the moment*. Joint United Nations Programme on HIV/AIDS. https://www.unaids.org/en/resources/documents/2020/global-aids-report
+19. UNAIDS. (2020). *Global AIDS update 2020: Seizing the moment*. Joint United Nations Programme on HIV/AIDS. https://www.unaids.org/en/resources/documents/2020/global-aids-report
 
 #### ACE Inhibitors
 
-16. Cushman, D. W., & Ondetti, M. A. (1991). History of the design of captopril and related inhibitors of angiotensin converting enzyme. *Hypertension*, *17*(4), 589–592. https://doi.org/10.1161/01.HYP.17.4.589
+20. Cushman, D. W., & Ondetti, M. A. (1991). History of the design of captopril and related inhibitors of angiotensin converting enzyme. *Hypertension*, *17*(4), 589–592. https://doi.org/10.1161/01.HYP.17.4.589
 
-17. Pfeffer, M. A., Braunwald, E., Moyé, L. A., Basta, L., Brown, E. J., Jr., Cuddy, T. E., Davis, B. R., Geltman, E. M., Goldman, S., Flaker, G. C., Klein, M., Lamas, G. A., Packer, M., Rouleau, J., Rouleau, J. L., Rutherford, J., Wertheimer, J. H., & Hawkins, C. M. (1992). Effect of captopril on mortality and morbidity in patients with left ventricular dysfunction after myocardial infarction: Results of the survival and ventricular enlargement trial. *New England Journal of Medicine*, *327*(10), 669–677. https://doi.org/10.1056/NEJM199209033271001
+21. Pfeffer, M. A., Braunwald, E., Moyé, L. A., Basta, L., Brown, E. J., Jr., Cuddy, T. E., Davis, B. R., Geltman, E. M., Goldman, S., Flaker, G. C., Klein, M., Lamas, G. A., Packer, M., Rouleau, J., Rouleau, J. L., Rutherford, J., Wertheimer, J. H., & Hawkins, C. M. (1992). Effect of captopril on mortality and morbidity in patients with left ventricular dysfunction after myocardial infarction: Results of the survival and ventricular enlargement trial. *New England Journal of Medicine*, *327*(10), 669–677. https://doi.org/10.1056/NEJM199209033271001
 
-18. Yusuf, S., Sleight, P., Pogue, J., Bosch, J., Davies, R., & Dagenais, G. (2000). Effects of an angiotensin-converting-enzyme inhibitor, ramipril, on cardiovascular events in high-risk patients. *New England Journal of Medicine*, *342*(3), 145–153. https://doi.org/10.1056/NEJM200001203420301
+22. Yusuf, S., Sleight, P., Pogue, J., Bosch, J., Davies, R., & Dagenais, G. (2000). Effects of an angiotensin-converting-enzyme inhibitor, ramipril, on cardiovascular events in high-risk patients. *New England Journal of Medicine*, *342*(3), 145–153. https://doi.org/10.1056/NEJM200001203420301
 
 #### Kinase Inhibitors
 
-19. Druker, B. J., Talpaz, M., Resta, D. J., Peng, B., Buchdunger, E., Ford, J. M., Lydon, N. B., Kantarjian, H., Capdeville, R., Ohno-Jones, S., & Sawyers, C. L. (2001). Efficacy and safety of a specific inhibitor of the BCR-ABL tyrosine kinase in chronic myeloid leukemia. *New England Journal of Medicine*, *344*(14), 1031–1037. https://doi.org/10.1056/NEJM200104053441401
+23. Druker, B. J., Talpaz, M., Resta, D. J., Peng, B., Buchdunger, E., Ford, J. M., Lydon, N. B., Kantarjian, H., Capdeville, R., Ohno-Jones, S., & Sawyers, C. L. (2001). Efficacy and safety of a specific inhibitor of the BCR-ABL tyrosine kinase in chronic myeloid leukemia. *New England Journal of Medicine*, *344*(14), 1031–1037. https://doi.org/10.1056/NEJM200104053441401
 
-20. Cohen, P. (2002). Protein kinases—the major drug targets of the twenty-first century? *Nature Reviews Drug Discovery*, *1*(4), 309–315. https://doi.org/10.1038/nrd773
+24. Cohen, P. (2002). Protein kinases—the major drug targets of the twenty-first century? *Nature Reviews Drug Discovery*, *1*(4), 309–315. https://doi.org/10.1038/nrd773
 
-21. Deininger, M., Buchdunger, E., & Druker, B. J. (2005). The development of imatinib as a therapeutic agent for chronic myeloid leukemia. *Blood*, *105*(7), 2640–2653. https://doi.org/10.1182/blood-2004-08-3097
+25. Deininger, M., Buchdunger, E., & Druker, B. J. (2005). The development of imatinib as a therapeutic agent for chronic myeloid leukemia. *Blood*, *105*(7), 2640–2653. https://doi.org/10.1182/blood-2004-08-3097
 
-22. Hochhaus, A., Larson, R. A., Guilhot, F., Radich, J. P., Branford, S., Hughes, T. P., Baccarani, M., Deininger, M. W., Cervantes, F., Fujihara, S., Ortmann, C. E., Menssen, H. D., Kantarjian, H., O'Brien, S. G., & Druker, B. J. (2017). Long-term outcomes of imatinib treatment for chronic myeloid leukemia. *New England Journal of Medicine*, *376*(10), 917–927. https://doi.org/10.1056/NEJMoa1609324
+26. Hochhaus, A., Larson, R. A., Guilhot, F., Radich, J. P., Branford, S., Hughes, T. P., Baccarani, M., Deininger, M. W., Cervantes, F., Fujihara, S., Ortmann, C. E., Menssen, H. D., Kantarjian, H., O'Brien, S. G., & Druker, B. J. (2017). Long-term outcomes of imatinib treatment for chronic myeloid leukemia. *New England Journal of Medicine*, *376*(10), 917–927. https://doi.org/10.1056/NEJMoa1609324
 
 #### COX-2 Inhibitors
 
-23. Vane, J. R., & Botting, R. M. (1998). Mechanism of action of nonsteroidal anti-inflammatory drugs. *American Journal of Medicine*, *104*(3A), 2S–8S. https://doi.org/10.1016/S0002-9343(97)00203-9
+27. Vane, J. R., & Botting, R. M. (1998). Mechanism of action of nonsteroidal anti-inflammatory drugs. *American Journal of Medicine*, *104*(3A), 2S–8S. https://doi.org/10.1016/S0002-9343(97)00203-9
 
-24. Bombardier, C., Laine, L., Reicin, A., Shapiro, D., Burgos-Vargas, R., Davis, B., Day, R., Ferraz, M. B., Hawkey, C. J., Hochberg, M. C., Kvien, T. K., & Schnitzer, T. J. (2000). Comparison of upper gastrointestinal toxicity of rofecoxib and naproxen in patients with rheumatoid arthritis. *New England Journal of Medicine*, *343*(21), 1520–1528. https://doi.org/10.1056/NEJM200011233432103
+28. Bombardier, C., Laine, L., Reicin, A., Shapiro, D., Burgos-Vargas, R., Davis, B., Day, R., Ferraz, M. B., Hawkey, C. J., Hochberg, M. C., Kvien, T. K., & Schnitzer, T. J. (2000). Comparison of upper gastrointestinal toxicity of rofecoxib and naproxen in patients with rheumatoid arthritis. *New England Journal of Medicine*, *343*(21), 1520–1528. https://doi.org/10.1056/NEJM200011233432103
 
-25. Silverstein, F. E., Faich, G., Goldstein, J. L., Simon, L. S., Pincus, T., Whelton, A., Makuch, R., Eisen, G., Agrawal, N. M., Stenson, W. F., Burr, A. M., Zhao, W. W., Kent, J. D., Lefkowith, J. B., Verburg, K. M., & Geis, G. S. (2000). Gastrointestinal toxicity with celecoxib vs nonsteroidal anti-inflammatory drugs for osteoarthritis and rheumatoid arthritis: The CLASS study. *JAMA*, *284*(10), 1247–1255. https://doi.org/10.1001/jama.284.10.1247
+29. Silverstein, F. E., Faich, G., Goldstein, J. L., Simon, L. S., Pincus, T., Whelton, A., Makuch, R., Eisen, G., Agrawal, N. M., Stenson, W. F., Burr, A. M., Zhao, W. W., Kent, J. D., Lefkowith, J. B., Verburg, K. M., & Geis, G. S. (2000). Gastrointestinal toxicity with celecoxib vs nonsteroidal anti-inflammatory drugs for osteoarthritis and rheumatoid arthritis: The CLASS study. *JAMA*, *284*(10), 1247–1255. https://doi.org/10.1001/jama.284.10.1247
 
-26. FitzGerald, G. A. (2004). Coxibs and cardiovascular disease. *New England Journal of Medicine*, *351*(17), 1709–1711. https://doi.org/10.1056/NEJMp048288
+30. FitzGerald, G. A. (2004). Coxibs and cardiovascular disease. *New England Journal of Medicine*, *351*(17), 1709–1711. https://doi.org/10.1056/NEJMp048288
         """)
     
     with tab2:
