@@ -1373,53 +1373,52 @@ Ki represents the dissociation constant for the ESI complex.
     
     with tab3:
         st.subheader("Dose-Response Curve Generator")
+        st.write("Generate beautiful dose-response curves to visualize how inhibitor concentration affects enzyme activity.")
         
         # Description and importance
-        st.markdown("""---
-        ### 🎯 Why This Calculator is Essential
-        
-        The Hill equation is the **fundamental mathematical model** for dose-response relationships in pharmacology. 
-        Understanding this curve is crucial for:
-        
-        - **Experimental design** - Predict what concentration range to test before doing expensive experiments
-        - **Data presentation** - Generate publication-quality curves for papers and presentations
-        - **Teaching tool** - Visualize how IC50, Hill slope, and activity range affect curve shape
-        - **Quality control** - Recognize aberrant data that doesn't fit the Hill equation
-        - **Drug comparison** - Compare theoretical curves of different inhibitors side-by-side
-        
-        **Hill slope interpretation:**
-        - **h = 1.0** (standard) → Non-cooperative binding, typical for most enzyme inhibitors
-        - **h > 1.0** (steep) → Positive cooperativity or multiple binding sites (e.g., h = 2-4)
-        - **h < 1.0** (shallow) → Negative cooperativity or heterogeneous binding
-        
-        **Real example:** Imatinib (Gleevec) for CML has Hill slope ≈ 1.0 and IC50 = 0.1 µM against BCR-ABL kinase, 
-        producing the characteristic sigmoidal curve you'll generate here.
-        
-        ### 📈 How to Use This Generator
-        
-        **Purpose:** Create theoretical dose-response curves without needing experimental data
-        
-        **Step-by-step:**
-        1. **Set Top Activity** - Usually 100% (enzyme fully active with no inhibitor)
-        2. **Set Bottom Activity** - Usually 0% (complete inhibition at high [I])
-        3. **Enter desired IC50** - The concentration where curve crosses midpoint (µM)
-        4. **Adjust Hill Slope** - Start with 1.0 (standard), then experiment:
-           - Try h = 2.0 to see cooperative binding
-           - Try h = 0.5 to see negative cooperativity
-        5. **Set Max Concentration** - Determines X-axis range (typically 100-1000× your IC50)
-        6. **Interpret curve** - Steeper slopes mean sharper on/off switching behavior
-        
-        **Uses:**
-        - **Before experiments:** "If my IC50 is ~5 µM, what concentrations should I test?"
-        - **For presentations:** Generate clean example curves to explain concepts
-        - **Parameter exploration:** See how changing IC50 or Hill slope affects the curve
-        - **Compare inhibitors:** Generate multiple curves with different IC50 values
-        
-        **Pro tip:** In drug development, you want Hill slope ≈ 1.0. Very steep curves (h > 3) can mean 
-        narrow therapeutic windows (small difference between effective and toxic doses).
-        
-        ---
+        st.info("""
+        💡 **What is a Dose-Response Curve?**  
+        It's a graph showing how your inhibitor's activity changes with concentration - the classic S-shaped curve 
+        you see in textbooks! Perfect for planning experiments, making presentations, or understanding how drugs work.
         """)
+        
+        with st.expander("🎯 Why You'll Love This Tool", expanded=False):
+            st.write("""
+            This generator helps you:
+            
+            - **Plan smarter experiments** - See what concentration range to test before spending money in the lab
+            - **Create presentation slides** - Generate clean, professional curves for your talks and papers
+            - **Explore "what if" scenarios** - Play with IC50 and Hill slope to understand their effects
+            - **Compare different drugs** - Generate multiple curves to see which inhibitor is more potent
+            - **Teach concepts** - Show students how the Hill equation actually looks in practice
+            
+            **Real example:** Before testing a new kinase inhibitor, you can visualize what your data might look like 
+            and choose the right concentration range (like 0.01 to 100 µM) instead of wasting samples!
+            """)
+        
+        with st.expander("📈 How to Use This Generator", expanded=False):
+            st.write("""
+            **Super simple - just adjust the sliders!**
+            
+            **Quick steps:**
+            1. **Top Activity** - Usually 100% (enzyme working full speed without inhibitor)
+            2. **Bottom Activity** - Usually 0% (enzyme completely blocked at high concentration)
+            3. **IC50** - The magic number where activity drops to 50% (your inhibitor's potency!)
+            4. **Hill Slope** - Controls curve steepness (start with 1.0, most common value)
+            5. **Max Concentration** - How far right the graph goes (try 100× your IC50)
+            
+            💡 **Pro tip:** Play with the Hill slope slider! At h = 1.0 you get a normal curve. At h = 2.0 
+            it gets steeper (cooperative binding). At h = 0.5 it gets shallower (mixed binding modes).
+            
+            **Hill slope decoder:**
+            - **h = 1.0** → Normal, non-cooperative binding (most common)
+            - **h > 1.0** → Steep curve, multiple binding sites working together
+            - **h < 1.0** → Shallow curve, heterogeneous binding
+            
+            **Drug dev insight:** Ideal drugs have h ≈ 1.0. Very steep curves (h > 3) can be dangerous - 
+            the difference between "effective dose" and "toxic dose" becomes too narrow!
+            """)
+        
         
         col1, col2 = st.columns([1, 1])
         
