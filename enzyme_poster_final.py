@@ -1813,32 +1813,34 @@ mevalonate, thereby reducing cholesterol production in the liver (Istvan & Deise
             """)
         
         with col2:
-            # Efficacy chart
-            data = {'Year': [1990, 1995, 2000, 2005, 2010, 2015, 2020],
-                   'Cardiac Deaths per 100,000': [321, 298, 257, 216, 179, 155, 134]}
+            # Efficacy chart - Heart disease mortality decline (2000-2019)
+            data = {'Year': [2000, 2005, 2010, 2015, 2019],
+                   'Heart Disease Deaths per 100,000': [257.6, 216.8, 179.1, 168.5, 161.5]}
             df = pd.DataFrame(data)
-            fig = px.line(df, x='Year', y='Cardiac Deaths per 100,000', 
-                         title="Impact of Statins on Cardiac Mortality (US)",
+            fig = px.line(df, x='Year', y='Heart Disease Deaths per 100,000', 
+                         title="Age-Adjusted Heart Disease Mortality in the US (2000-2019)",
                          markers=True)
             fig.update_layout(height=350)
             st.plotly_chart(fig, width='stretch')
-            st.caption("""*Data source: CDC Wonder Database, Age-Adjusted Death Rates. 
-            Trends correlate with statin introduction and widespread adoption (Istvan & Deisenhofer, 2001; 
-            Heart Protection Study, 2002). See References section for full citations.*""")
+            st.caption("""*Data source: CDC NCHS Data Brief #425 (Sawyer & Flagg, 2021). Age-adjusted heart disease 
+            death rates per 100,000 U.S. standard population. ICD-10 codes I00-I09, I11, I13, I20-I51. 
+            Statins widely adopted after FDA approval of lovastatin (1987), simvastatin (1991), and atorvastatin (1996). 
+            DOI: 10.15620/cdc:112339. See References section for full citations.*""")
             
             # Market comparison
             statin_data = pd.DataFrame({
-                'Drug': ['Atorvastatin', 'Rosuvastatin', 'Simvastatin', 'Pravastatin'],
-                'LDL Reduction (%)': [39, 45, 35, 28],
-                'Type': ['High Potency', 'High Potency', 'Moderate', 'Moderate']
+                'Drug': ['Rosuvastatin\n(20 mg)', 'Simvastatin\n(40 mg)'],
+                'LDL Reduction (%)': [50, 30],
+                'Type': ['High Potency', 'Moderate Potency']
             })
             fig2 = px.bar(statin_data, x='Drug', y='LDL Reduction (%)', 
-                         color='Type', title='Comparative Potency of Statins')
+                         color='Type', title='Comparative Potency of Statins',
+                         color_discrete_map={'High Potency': '#FF6B6B', 'Moderate Potency': '#4ECDC4'})
             fig2.update_layout(height=300)
             st.plotly_chart(fig2, width='stretch')
-            st.caption("""*Representative data based on clinical trial meta-analyses. 
-            LDL-C reduction at standard doses (Istvan & Deisenhofer, 2001; Heart Protection Study, 2002; 
-            Ridker et al., 2008). See References section for full citations.*""")
+            st.caption("""*Data from large-scale randomized controlled trials. Rosuvastatin 20 mg: 50% LDL reduction 
+            (Ridker et al., 2008, JUPITER trial, NEJM). Simvastatin 40 mg: ~30% LDL reduction 
+            (Heart Protection Study, 2002, The Lancet). See References section for full citations.*""")
     
     elif case_study == "HIV Protease Inhibitors":
         col1, col2 = st.columns([1, 1])
@@ -1980,37 +1982,29 @@ in the ACE active site, preventing substrate binding (Cushman & Ondetti, 1991).
             """)
         
         with col2:
-            # Blood pressure reduction
-            bp_data = pd.DataFrame({
-                'Weeks': [0, 2, 4, 8, 12],
-                'Systolic BP (mmHg)': [160, 152, 145, 138, 135],
-                'Diastolic BP (mmHg)': [98, 94, 90, 86, 84]
-            })
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=bp_data['Weeks'], y=bp_data['Systolic BP (mmHg)'],
-                                   name='Systolic', mode='lines+markers', line=dict(color='red')))
-            fig.add_trace(go.Scatter(x=bp_data['Weeks'], y=bp_data['Diastolic BP (mmHg)'],
-                                   name='Diastolic', mode='lines+markers', line=dict(color='blue')))
-            fig.update_layout(title='Typical Blood Pressure Response to ACE Inhibitors',
-                            xaxis_title='Treatment Duration (weeks)',
-                            yaxis_title='Blood Pressure (mmHg)',
-                            height=350)
-            st.plotly_chart(fig, width='stretch')
-            st.caption("""*Representative data based on clinical trials: ALLHAT (2002), HOPE Study (Yusuf et al., 2000). 
-            See References section for full citations.*""")
+            # Blood pressure effects note
+            st.info("""
+            **Blood Pressure Effects:** The HOPE trial demonstrated that ramipril's cardiovascular benefits extend beyond 
+            blood pressure reduction. Mean BP reduction was only 3/2 mmHg (139/79 → 136/76 mmHg at study end), yet cardiovascular 
+            outcomes improved by 20-32%. This suggests ACE inhibitors provide vascular protection through multiple mechanisms 
+            beyond BP lowering (e.g., improved endothelial function, reduced vascular inflammation, plaque stabilization).
+            """)
+            
+            st.caption("""*Source: HOPE Study blood pressure data. Yusuf S, et al. (2000). N Engl J Med. 342(3):145-153.*""")
             
             # Cardiovascular outcomes
             outcome_data = pd.DataFrame({
-                'Outcome': ['Heart Attack', 'Stroke', 'Heart Failure', 'Death'],
-                'Risk Reduction (%)': [20, 25, 30, 23]
+                'Outcome': ['Heart Attack', 'Stroke', 'Heart Failure', 'CV Death'],
+                'Risk Reduction (%)': [20, 32, 23, 26]
             })
             fig2 = px.bar(outcome_data, x='Outcome', y='Risk Reduction (%)',
-                         title='Cardiovascular Risk Reduction with ACE Inhibitors',
+                         title='Cardiovascular Risk Reduction with Ramipril (HOPE Trial)',
                          color='Risk Reduction (%)', color_continuous_scale='Greens')
             fig2.update_layout(height=300, showlegend=False)
             st.plotly_chart(fig2, width='stretch')
-            st.caption("""*Data compiled from: SAVE Trial (Pfeffer et al., 1992), HOPE Study (Yusuf et al., 2000), 
-            SOLVD Trial. Meta-analysis values averaged across major trials. See References section for full citations.*""")
+            st.caption("""*Source: Heart Outcomes Prevention Evaluation (HOPE) Study. Yusuf S, et al. (2000). Effects of ramipril (10 mg/day) 
+            on cardiovascular events in 9,297 high-risk patients over 5 years. N Engl J Med. 342(3):145-153. DOI: 10.1056/NEJM200001203420301. 
+            Risk reductions: MI 20% (RR 0.80, P<0.001), Stroke 32% (RR 0.68, P<0.001), Heart Failure 23% (RR 0.77, P<0.001), CV Death 26% (RR 0.74, P<0.001).*""")
     
     elif case_study == "Kinase Inhibitors (Cancer)":
         col1, col2 = st.columns([1, 1])
