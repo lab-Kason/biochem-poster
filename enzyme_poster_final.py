@@ -74,7 +74,7 @@ def create_header():
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown('<div class="main-header">🧬 Enzyme Inhibitors in Drug Development</div>', unsafe_allow_html=True)
-        st.markdown('<p style="text-align: center; font-size: 1.1rem; color: #666; margin-bottom: 1rem;">An Interactive Educational Platform for Understanding Drug Development</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; font-size: 1.1rem; color: #666; margin-bottom: 1rem;">An Interactive Educational Platform for Understanding Drug Development; Group member:Fung Yat Kiu (13880442)Lee Chun Hei (13596941)Lo Yuet Ching (13881997)CHEN Ying Pui(13876834)(</p>', unsafe_allow_html=True)
         
         # Complete Application Guide
         with st.expander("🎯 **START HERE: Complete User Guide**", expanded=False):
