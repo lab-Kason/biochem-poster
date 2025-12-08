@@ -113,7 +113,7 @@ def create_header():
             - *Best for: Analyzing your experimental data*
             
             **5. 📖 References**
-            - 26+ peer-reviewed papers
+            - 30 peer-reviewed papers
             - Online databases and resources
             - *Best for: Citations and further reading*
             
@@ -195,7 +195,7 @@ def show_overview():
         - 💰 **Average cost:** $2.6 billion per approved drug
         - 📊 **Success rate:** Only 12% of drug candidates reach market
         - 🎯 **Enzyme targets:** ~47% of all FDA-approved drugs target enzymes
-        - 💵 **Market value:** $180+ billion annually for enzyme inhibitors
+        - 💵 **Market value:** $150+ billion annually for enzyme inhibitors
         """)
     
     with col2:
@@ -1491,7 +1491,7 @@ def show_references():
         ---
         
         **Tab 1: Key Papers** 📄
-        - **31 peer-reviewed publications** from top journals
+        - **30 peer-reviewed publications** from top journals
         - All citations in **APA 7th edition format**
         - **DOI links** for direct access to papers
         - Organized by topic:
@@ -2065,19 +2065,24 @@ cancer cell proliferation and survival (Druker et al., 2001).
         
         with col2:
             # CML survival comparison
-            cml_data = pd.DataFrame({
-                'Treatment': ['Pre-Imatinib\n(1990s)', 'Imatinib\n(2001+)', 'Second-gen\n(2006+)'],
-                '5-Year Survival (%)': [30, 89, 93],
-                'Order': [1, 2, 3]
-            })
-            fig = px.bar(cml_data, x='Treatment', y='5-Year Survival (%)',
-                        title='CML Survival: The Imatinib Revolution',
-                        color='5-Year Survival (%)',
-                        color_continuous_scale='Blues')
-            fig.update_layout(height=350, showlegend=False)
-            st.plotly_chart(fig, width='stretch')
-            st.caption("""*Data sources: Druker et al. (2001) NEJM; Hochhaus et al. (2017) 10-year follow-up study. 
-            See References section for full citations.*""")
+            st.info("""
+            **CML Survival Transformation:**
+            
+            **Pre-Imatinib Era (1990s):** Treatment options were limited to interferon-α, hydroxyurea, and busulfan, 
+            with allogeneic bone marrow transplantation as the only curative option. Five-year survival rates were 
+            significantly lower, with many patients progressing to blast crisis.
+            
+            **Imatinib Era (2001+):** Introduction of imatinib (Gleevec) achieved ~89% five-year survival with 
+            complete cytogenetic response in many patients (Druker et al., 2001).
+            
+            **Second-Generation TKIs (2006+):** Drugs like dasatinib and nilotinib further improved outcomes to 
+            ~93% five-year survival, with deeper molecular responses (Hochhaus et al., 2017).
+            
+            *This represents one of oncology's greatest success stories - transforming CML from a fatal disease 
+            to a manageable chronic condition.*
+            """)
+            
+            st.caption("""*Sources: Druker et al. (2001) NEJM 344(14):1031-1037; Hochhaus et al. (2017) NEJM 376(10):917-927.*""")
             
             # Kinase inhibitor selectivity
             st.markdown("**Selectivity Profile:**")
@@ -2151,24 +2156,23 @@ demonstrating importance of long-term safety monitoring even after FDA approval.
             """)
         
         with col2:
-            # Selectivity comparison
-            cox_data = pd.DataFrame({
-                'Drug': ['Celecoxib', 'Traditional NSAIDs', 'Aspirin'],
-                'COX-2 Inhibition': [90, 75, 65],
-                'COX-1 Inhibition': [10, 80, 95]
-            })
-            fig = go.Figure()
-            fig.add_trace(go.Bar(name='COX-2 Inhibition', x=cox_data['Drug'], 
-                               y=cox_data['COX-2 Inhibition'], marker_color='green'))
-            fig.add_trace(go.Bar(name='COX-1 Inhibition', x=cox_data['Drug'], 
-                               y=cox_data['COX-1 Inhibition'], marker_color='red'))
-            fig.update_layout(title='COX-2 Selectivity: Reducing GI Side Effects',
-                            yaxis_title='% Inhibition',
-                            barmode='group',
-                            height=350)
-            st.plotly_chart(fig, width='stretch')
-            st.caption("""*Data source: Vane & Botting (1998) Mechanism of action of NSAIDs. 
-            American Journal of Medicine 104(3A):2S-8S. See References section for full citation.*""")
+            # Selectivity comparison - descriptive approach
+            st.info("""
+            **COX-2 Selectivity: A Key Innovation**
+            
+            COX-2 selective inhibitors like **celecoxib** were designed to preferentially inhibit COX-2 
+            (the inducible enzyme involved in inflammation) while sparing COX-1 (the constitutive enzyme 
+            that protects the gastric mucosa). This selectivity is expressed as IC₅₀ ratios:
+            
+            - **Celecoxib**: ~375-fold selective for COX-2 over COX-1
+            - **Traditional NSAIDs** (e.g., ibuprofen, naproxen): Non-selective, inhibit both COX-1 and COX-2
+            - **Aspirin**: Preferentially inhibits COX-1, leading to more GI side effects
+            
+            This high selectivity for COX-2 translates to significantly reduced gastrointestinal complications 
+            compared to traditional NSAIDs, as demonstrated in clinical trials (CLASS and VIGOR studies).
+            
+            *Source: Vane & Botting (1998). See References section for full citation.*
+            """)
             
             # Side effect comparison
             side_effects = pd.DataFrame({
